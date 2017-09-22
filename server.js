@@ -3,8 +3,7 @@ let app = express();
 let bodyParser = require('body-parser');
 
 const config = require('./config');
-const routes = require('./routes');
-const setUpWebsocket = require('./websocket');
+const setUpWebsocket = require('./websocket/websocket');
 
 // configuration application =================
 
