@@ -7,6 +7,12 @@ const createClassroom = () => {
   }
 };
 
+/*  Deletes a classroom.
+*/
+const deleteClassroom = (sockets, id) => {
+  delete sockets[id];
+};
+
 /*  Returns the client associated to the given id.
     params:
       sockets (object)
@@ -28,5 +34,6 @@ const getClient = (sockets, id) => {
 
 module.exports = {
   createClassroom,
+  deleteClassroom,
   getClient
 };

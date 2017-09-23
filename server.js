@@ -12,8 +12,9 @@ app.use(bodyParser.urlencoded({'extended':'true'}));            // parse applica
 app.use(bodyParser.json());                                     // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
-app.get('/classroom/:id', routes.getClassroom);
 app.post('/classroom', routes.createClassroom);
+app.get('/classroom/:id', routes.getClassroom);
+app.delete('/classroom/:id', routes.deleteClassroom);
 
 let server = app.listen(config.port);
 
