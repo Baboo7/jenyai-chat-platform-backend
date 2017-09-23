@@ -1,3 +1,4 @@
+const config = require('../config/config');
 const sockets = require('../websocket/sockets');
 
 const getClassroom = (req, res) => {
@@ -8,8 +9,8 @@ const getClassroom = (req, res) => {
     return res.status(200).json({ success: false });
   }
 
-  if (id.length > 6) {
-    console.error('classroom id too long');
+  if (id.length !== config.classroomIdLength) {
+    console.error('classroom id has not the right size');
     return res.status(200).json({ success: false });
   }
 
