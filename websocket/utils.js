@@ -1,3 +1,12 @@
+/*  Creates a new classroom in the sockets object.
+*/
+const createClassroom = () => {
+  return {
+    students: { },
+    teachers: { }
+  }
+};
+
 /*  Returns the client associated to the given id.
     params:
       sockets (object)
@@ -17,4 +26,7 @@ const getClient = (sockets, id) => {
   return client;
 };
 
-module.exports = { getClient };
+module.exports = {
+  createClassroom,
+  getClient
+};

@@ -13,6 +13,7 @@ app.use(bodyParser.json());                                     // parse applica
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
 app.get('/classroom/:id', routes.getClassroom);
+app.post('/classroom', routes.createClassroom);
 
 let server = app.listen(config.port);
 
