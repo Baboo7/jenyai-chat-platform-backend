@@ -1,4 +1,6 @@
-const init = (data, sockets, socket, id) => {
+let sockets = require('../sockets');
+
+const init = (data, socket, id) => {
   let emitterType = data.emitterType;
   console.log(`new ${emitterType} connected ${id}`);
 

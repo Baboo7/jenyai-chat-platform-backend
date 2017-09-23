@@ -1,6 +1,7 @@
-const utils= require('../utils');
+const utils = require('../utils');
+let sockets = require('../sockets');
 
-const disconnect = (sockets, id) => {
+const disconnect = (id) => {
   let client = utils.getClient(sockets, id);
   if (client === null) {
     return;

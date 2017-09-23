@@ -1,6 +1,7 @@
 const utils = require('../utils');
+let sockets = require('../sockets');
 
-const init = (data, sockets, id) => {
+const init = (data, id) => {
   let client = utils.getClient(sockets, id);
   if (client === null) {
     return;
