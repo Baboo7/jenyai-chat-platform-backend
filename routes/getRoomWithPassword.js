@@ -1,9 +1,9 @@
 const config = require('../config');
 const sockets = require('../websocket/sockets');
 
-const createRoom = (req, res) => {
-  console.info('route > create classroom');
-  let id = req.body.id;
+const getRoomWithPassword = (req, res) => {
+  console.info('route > get classroom with password');
+  let id = req.params.id;
   if (id === undefined) {
     console.error('missing id parameter');
     return res.status(200).json({ success: false });
@@ -20,23 +20,16 @@ const createRoom = (req, res) => {
     return res.status(200).json({ success: false });
   }
 
-  if (password.length !== config.passwordLength) {
-    console.error(`classroom password ${password} has not the right size`);
+  if (sockets[id] === undefined) {
+    console.info(`classroom ${id} not found`);
+    return res.status(200).json({ success: false });
+  } else if (password !== sockets[id].password) {
+    console.info(`wrong password ${password} for room ${id}`);
     return res.status(200).json({ success: false });
   }
 
-  if (sockets[id] !== undefined) {
-    console.warn('classroom already exists');
-    return res.status(200).json({ success: false });
-  }
-
-  sockets[id] = {
-    password,
-    student: { },
-    teacher: { }
-  }
-  console.info(`classroom ${id} successfully created`);
+  console.info(`classroom ${id} successfully found`);
   return res.status(200).json({ success: true });
 };
 
-module.exports = createRoom;
+module.exports = getRoomWithPassword;

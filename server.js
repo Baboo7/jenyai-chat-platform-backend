@@ -20,6 +20,7 @@ app.use(function(req, res, next) {
 
 app.post('/classroom', routes.createRoom);
 app.get('/classroom/:id', routes.getRoom);
+app.post('/classroom/:id', routes.getRoomWithPassword);
 app.delete('/classroom/:id', routes.deleteRoom);
 
 let server = app.listen(config.port);
