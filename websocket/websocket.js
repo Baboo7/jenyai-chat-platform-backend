@@ -6,13 +6,16 @@ const setUpWebsocket = server => {
   let io = require('socket.io')(server);
 
   io.on('connection', socket => {
-    let id = uuidv4();
+    // user contains the userId and h.is.er type and roomId
+    let user = {
+      userId: uuidv4()
+    }
 
-    socket.on('init', data => { eventHandler.init(data, socket, id); });
+    socket.on('init', data => { eventHandler.init(data, socket, user); });
 
-    socket.on('message', data => { eventHandler.message(data, id); });
+    socket.on('message', data => { eventHandler.message(data, user); });
 
-    socket.on('disconnect', () => { eventHandler.disconnect(id); });
+    socket.on('disconnect', () => { eventHandler.disconnect(user); });
   });
 };
 

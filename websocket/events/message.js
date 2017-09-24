@@ -1,31 +1,31 @@
 const utils = require('../utils');
 let sockets = require('../sockets');
 
-const init = (data, id) => {
-  let client = utils.getClient(sockets, id);
+const init = (data, user) => {
+  let client = utils.getClient(sockets, user);
   if (client === null) {
     return;
   }
-  console.log(`message received from ${client.emitterType} ${id}: `, data);
+  console.log(`message received from ${user.type} ${user.userId}: `, data);
 
-  if (client.emitterType === 'student') {
-    Object.keys(sockets.teachers).forEach(teacherId => {
-      sockets.teachers[teacherId].socket.emit('message',
+  if (user.type === 'student') {
+    Object.keys(sockets[user.roomId]['teacher']).forEach(id => {
+      sockets[user.roomId]['teacher'][id].socket.emit('message',
       {
-        emitter: id,
+        emitter: user.userId,
         message: {
           type: 'text',
           payload: data.payload
         }
       });
     });
-  } else if (client.emitterType === 'teacher') {
+  } else if (user.type === 'teacher') {
     if (data.recipient) {
-      let student = sockets.students[data.recipient];
+      let student = sockets[user.roomId]['student'][data.recipient];
       if (student !== undefined) {
         student.socket.emit('message',
         {
-          emitter: id,
+          emitter: user.userId,
           message: {
             type: 'text',
             payload: data.payload

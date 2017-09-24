@@ -1,22 +1,45 @@
 let sockets = require('../sockets');
 
-const init = (data, socket, id) => {
+const init = (data, socket, user) => {
   let emitterType = data.emitterType;
-  console.log(`new ${emitterType} connected ${id}`);
+  let name = data.name;
+  let roomId = data.roomId;
 
-  if (emitterType === 'student') {
-    sockets.students[id] = { emitterType, socket };
-    Object.keys(sockets.teachers).forEach(teacherId => {
-      sockets.teachers[teacherId].socket.emit('new-students', { students: [ id ] });
-    });
-  } else if (emitterType === 'teacher') {
-    sockets.teachers[id] = { emitterType, socket };
-    socket.emit('new-students', { students: Object.keys(sockets.students) });
-  } else {
-    console.error('unexpected emitter type', emitterType, socket);
+  if (['student', 'teacher'].indexOf(emitterType) === -1) {
+    console.error(`unexpected emitter type ${emitterType}`);
+    return;
   }
 
-  socket.emit('set-id', {id: id});
+  if (sockets[roomId] === undefined) {
+    console.error(`room ${roomId} not found`);
+    return;
+  }
+
+  user.type = emitterType;
+  user.roomId = roomId;
+
+  console.log(`new ${emitterType} ${name} (${user.userId}) connected to room ${roomId}`);
+  sockets[roomId][emitterType][user.userId] = { name, socket };
+  if (emitterType === 'student') {
+    Object.keys(sockets[roomId]['teacher']).forEach(id => {
+      sockets[roomId]['teacher'][id].socket.emit(
+        'new-students',
+        { students: [ { id: user.userId, name } ] }
+      );
+    });
+  } else if (emitterType === 'teacher') {
+    let connectedStudents = [ ];
+    Object.keys(sockets[roomId]['student']).forEach(id => {
+      connectedStudents.push({
+        id,
+        name: sockets[roomId]['student'][id].name
+      });
+    });
+    socket.emit(
+      'new-students',
+      { students: connectedStudents }
+    );
+  }
 };
 
 module.exports = init;

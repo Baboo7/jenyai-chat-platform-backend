@@ -1,11 +1,6 @@
-/*
-  students and teachers have the following shape for a given id:
-    · emitterType (string)
-    · socket (socket object)
+/* Structure of the sockets object: sockets[roomId][emitterType][userId]
+  Contains { name, socket }
 */
-let sockets = {
-  students: { },
-  teachers: { }
-};
+let sockets = { };
 
 module.exports = sockets;

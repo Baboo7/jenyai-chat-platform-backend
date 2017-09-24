@@ -2,31 +2,31 @@
 */
 const createClassroom = () => {
   return {
-    students: { },
-    teachers: { }
+    student: { },
+    teacher: { }
   }
 };
 
 /*  Deletes a classroom.
 */
-const deleteClassroom = (sockets, id) => {
-  delete sockets[id];
+const deleteClassroom = (sockets, roomId) => {
+  delete sockets[roomId];
 };
 
 /*  Returns the client associated to the given id.
     params:
       sockets (object)
-      id (number)
+      user (object)
     return: the client object or null if not found
 */
-const getClient = (sockets, id) => {
+const getClient = (sockets, user) => {
   let client = null;
-  if (sockets.students[id] !== undefined) {
-    client = sockets.students[id];
-  } else if (sockets.teachers[id] !== undefined) {
-    client = sockets.teachers[id];
+  if (sockets[user.roomId]
+    && sockets[user.roomId][user.type]
+    && sockets[user.roomId][user.type][user.userId]) {
+    client = sockets[user.roomId][user.type][user.userId];
   } else {
-    console.error(`no client found for id ${id}`);
+    console.error(`no client found for id ${user.userId}`);
   }
 
   return client;
