@@ -26,14 +26,19 @@ const getClient = (sockets, user) => {
     && sockets[user.roomId][user.type][user.userId]) {
     client = sockets[user.roomId][user.type][user.userId];
   } else {
-    console.error(`no client found for id ${user.userId}`);
+    console.error(`no client found for [${user.roomId}][${user.type}][${user.userId}]`);
   }
 
   return client;
 };
 
+const strUser = user => {
+  return `[${user.roomId}][${user.type}][${user.userId}]`;
+};
+
 module.exports = {
   createClassroom,
   deleteClassroom,
-  getClient
+  getClient,
+  strUser
 };
