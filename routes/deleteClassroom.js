@@ -1,4 +1,4 @@
-const config = require('../config/config');
+const config = require('../config');
 const sockets = require('../websocket/sockets');
 const utils = require('../websocket/utils');
 
@@ -10,7 +10,7 @@ const deleteClassroom = (req, res) => {
     return res.status(200).json({ success: false });
   }
 
-  if (id.length !== config.classroomIdLength) {
+  if (id.length !== config.roomIdLength) {
     console.error('classroom id has not the right size');
     return res.status(200).json({ success: false });
   }
