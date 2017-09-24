@@ -18,9 +18,9 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.post('/classroom', routes.createClassroom);
-app.get('/classroom/:id', routes.getClassroom);
-app.delete('/classroom/:id', routes.deleteClassroom);
+app.post('/classroom', routes.createRoom);
+app.get('/classroom/:id', routes.getRoom);
+app.delete('/classroom/:id', routes.deleteRoom);
 
 let server = app.listen(config.port);
 

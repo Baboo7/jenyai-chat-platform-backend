@@ -1,18 +1,3 @@
-/*  Creates a new classroom in the sockets object.
-*/
-const createClassroom = () => {
-  return {
-    student: { },
-    teacher: { }
-  }
-};
-
-/*  Deletes a classroom.
-*/
-const deleteClassroom = (sockets, roomId) => {
-  delete sockets[roomId];
-};
-
 /*  Returns the client associated to the given id.
     params:
       sockets (object)
@@ -37,8 +22,6 @@ const strUser = user => {
 };
 
 module.exports = {
-  createClassroom,
-  deleteClassroom,
   getClient,
   strUser
 };

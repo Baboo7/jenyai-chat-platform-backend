@@ -1,7 +1,7 @@
 const config = require('../config');
 const sockets = require('../websocket/sockets');
 
-const getClassroom = (req, res) => {
+const getRoom = (req, res) => {
   console.info('route > get classroom');
   let id = req.params.id;
   if (id === undefined) {
@@ -23,4 +23,4 @@ const getClassroom = (req, res) => {
   return res.status(200).json({ success: true });
 };
 
-module.exports = getClassroom;
+module.exports = getRoom;

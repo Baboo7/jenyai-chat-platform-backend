@@ -1,11 +1,11 @@
-const createClassroom = require('./createClassroom');
-const deleteClassroom = require('./deleteClassroom');
-const getClassroom = require('./getClassroom');
+const createRoom = require('./createRoom');
+const deleteRoom = require('./deleteRoom');
+const getRoom = require('./getRoom');
 
 const routes = {
-  createClassroom,
-  deleteClassroom,
-  getClassroom
+  createRoom,
+  deleteRoom,
+  getRoom
 };
 
 module.exports = routes;

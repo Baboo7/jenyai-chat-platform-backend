@@ -1,10 +1,9 @@
 const config = require('../config');
 const sockets = require('../websocket/sockets');
-const utils = require('../websocket/utils');
 
-const createClassroom = (req, res) => {
-  console.info('route > create classroom');
-  let id = req.body.id;
+const deleteRoom = (req, res) => {
+  console.info('route > delete classroom');
+  let id = req.params.id;
   if (id === undefined) {
     console.error('missing id parameter');
     return res.status(200).json({ success: false });
@@ -15,14 +14,14 @@ const createClassroom = (req, res) => {
     return res.status(200).json({ success: false });
   }
 
-  if (sockets[id] !== undefined) {
-    console.warn('classroom already exists');
+  if (sockets[id] === undefined) {
+    console.info('classroom not found');
     return res.status(200).json({ success: false });
   }
 
-  sockets[id] = utils.createClassroom();
-  console.info('classroom successfully created');
+  delete sockets[id];
+  console.info('classroom successfully deleted');
   return res.status(200).json({ success: true });
 };
 
-module.exports = createClassroom;
+module.exports = deleteRoom;
