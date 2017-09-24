@@ -2,43 +2,30 @@ const utils = require('../utils');
 let sockets = require('../sockets');
 
 const init = (data, user) => {
-  let client = utils.getClient(sockets, user);
-  if (client === null) {
+  let emitter = utils.getClient(sockets, user);
+  if (emitter === null) {
     return;
   }
-  console.log(`message received from ${user.type} ${user.userId}: `, data);
 
-  if (user.type === 'student') {
-    let message = {
-      emitter: user.userId,
-      emitterType: user.type,
-      message: {
-        type: 'text',
-        payload: data.payload
-      }
-    };
-    sockets[user.roomId][user.type][user.userId].socket.emit('message', message);
-    Object.keys(sockets[user.roomId]['teacher']).forEach(id => {
-      sockets[user.roomId]['teacher'][id].socket.emit('message', message);
-    });
-  } else if (user.type === 'teacher') {
-    if (data.recipient) {
-      let message = {
-        emitter: user.userId,
-        emitterType: user.type,
-        recipient: data.recipient,
-        message: {
-          type: 'text',
-          payload: data.payload
-        }
-      };
-      let student = sockets[user.roomId]['student'][data.recipient];
-      if (student !== undefined) {
-        student.socket.emit('message', message);
-        sockets[user.roomId][user.type][user.userId].socket.emit('message', message);
-      }
-    }
+  let recipientType = user.type === 'student' ? 'teacher' : 'student';
+  let recipient = utils.getClient(sockets, { userId: emitter.recipient, roomId: user.roomId, type: recipientType });
+  if (recipient === null) {
+    return;
   }
+
+  console.log(`${user.type} ${emitter.name} ${user.userId} sends message to ${recipientType} ${recipient.name} ${emitter.recipient}`);
+  let message = {
+    emitter: user.userId,
+    emitterType: user.type,
+    recipient: emitter.recipient,
+    message: {
+      type: 'text',
+      payload: data.payload
+    }
+  };
+
+  emitter.socket.emit('message', message);
+  recipient.socket.emit('message', message);
 };
 
 module.exports = init;
