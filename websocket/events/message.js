@@ -26,6 +26,10 @@ const init = (data, user) => {
 
   emitter.socket.emit('message', message);
   recipient.socket.emit('message', message);
+
+  let studentUuid = user.type === 'student' ? user.userId : emitter.recipient;
+  const controllers = require('../../database/controllers');
+  controllers.conversations.addMessage(studentUuid, (new Date()), message);
 };
 
 module.exports = init;
