@@ -17,11 +17,21 @@ const getClient = (sockets, user) => {
   return client;
 };
 
+const isStudent = user => {
+  return user.type === 'student';
+};
+
+const isTeacher = user => {
+  return user.type === 'teacher';
+};
+
 const strUser = user => {
   return `[${user.roomId}][${user.type}][${user.userId}]`;
 };
 
 module.exports = {
   getClient,
+  isStudent,
+  isTeacher,
   strUser
 };
