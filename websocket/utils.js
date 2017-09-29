@@ -32,6 +32,23 @@ const getEmitterAndRecipient = (sockets, user) => {
   return { emitter, recipient };
 };
 
+const getUnderloadedTeacherId = (sockets, roomId) => {
+  let teachers = Object.keys(sockets[roomId]['teacher']);
+  if (teachers.length === 0) { return null; }
+  
+  let minLoad = 100;
+  let underloadedId;
+  teachers.forEach(id => {
+    let load = sockets[roomId]['teacher'][id].load;
+    if (load < minLoad) {
+      underloadedId = id;
+      minLoad = load;
+    }
+  });
+
+  return underloadedId;
+};
+
 const isStudent = user => {
   return user.type === 'student';
 };
@@ -52,6 +69,7 @@ module.exports = {
   broadcastTeachers,
   getEmitter,
   getEmitterAndRecipient,
+  getUnderloadedTeacherId,
   isStudent,
   isTeacher,
   mirrorType,
