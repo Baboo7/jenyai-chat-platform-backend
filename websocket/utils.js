@@ -5,9 +5,22 @@ const broadcastTeachers = (sockets, roomId, event, message) => {
   });
 };
 
+/*  Connects a student to the teacher in charge of the least number of students.
+
+    PARAMS
+      sockets (object)
+      user (object): has to be a student user
+      emitter (object): has to be a student emitter
+
+    RETURN
+      none
+*/
 const connectToUnderloadedTeacher = (sockets, user, emitter) => {
   let teacherId = getUnderloadedTeacherId(sockets, user.roomId);
-  if (teacherId === null) { return; }
+  if (teacherId === null) {
+    delete emitter.recipient;
+    return;
+  }
   emitter.recipient = teacherId;
 
   let teacher = getEmitter(sockets, { roomId: user.roomId, type: 'teacher', userId: teacherId });
@@ -21,10 +34,13 @@ const connectToUnderloadedTeacher = (sockets, user, emitter) => {
 };
 
 /*  Returns the client associated to the given id.
-    params:
+
+    PARAMS
       sockets (object)
       user (object)
-    return: the client object or null if not found
+
+    RETURN
+      the client object or null if not found
 */
 const getEmitter = (sockets, user) => {
   let client = null;

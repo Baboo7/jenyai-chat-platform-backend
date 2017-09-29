@@ -6,17 +6,16 @@ const disconnect = (user) => {
   if (emitter === null) { return; }
 
   console.log(`${utils.strUser(user)} disconnected`);
-
-  Object.keys(sockets[user.roomId]['student']).forEach(id => {
-    let student = sockets[user.roomId]['student'][id];
-    if (student.recipient && student.recipient === user.userId) {
-      delete student.recipient;
-    }
-  })
-
   delete sockets[user.roomId][user.type][user.userId];
-  if (user.type === 'student') {
-    utils.broadcastTeachers(sockets, user.roomId, 'del-student', { student: [ user.userId ] });
+
+  if (utils.isTeacher(user)) {
+    Object.keys(sockets[user.roomId]['student']).forEach(studentId => {
+      let student = sockets[user.roomId]['student'][studentId];
+
+      if (student.recipient && student.recipient === user.userId) {
+        utils.connectToUnderloadedTeacher(sockets, { roomId: user.roomId, type: 'student', userId: studentId }, student);
+      }
+    });
   }
 };
 
