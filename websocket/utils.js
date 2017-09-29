@@ -11,7 +11,7 @@ const broadcastTeachers = (sockets, roomId, event, message) => {
       user (object)
     return: the client object or null if not found
 */
-const getClient = (sockets, user) => {
+const getEmitter = (sockets, user) => {
   let client = null;
   if (sockets[user.roomId]
     && sockets[user.roomId][user.type]
@@ -25,9 +25,9 @@ const getClient = (sockets, user) => {
 };
 
 const getEmitterAndRecipient = (sockets, user) => {
-  let emitter = getClient(sockets, user);
+  let emitter = getEmitter(sockets, user);
   if (emitter === null) { return { emitter: null, recipient: null }; }
-  let recipient = getClient(sockets, { userId: emitter.recipient, roomId: user.roomId, type: mirrorType(user) });
+  let recipient = getEmitter(sockets, { userId: emitter.recipient, roomId: user.roomId, type: mirrorType(user) });
 
   return { emitter, recipient };
 };
@@ -50,7 +50,7 @@ const strUser = user => {
 
 module.exports = {
   broadcastTeachers,
-  getClient,
+  getEmitter,
   getEmitterAndRecipient,
   isStudent,
   isTeacher,

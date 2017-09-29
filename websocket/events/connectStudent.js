@@ -2,7 +2,7 @@ const utils = require('../utils');
 let sockets = require('../sockets');
 
 const connectStudent = (data, user) => {
-  let emitter = utils.getClient(sockets, user);
+  let emitter = utils.getEmitter(sockets, user);
   if (emitter === null) { return; }
 
   if (user.type !== 'teacher') {
@@ -11,7 +11,7 @@ const connectStudent = (data, user) => {
   }
 
   let sId = data.id;
-  let recipient = utils.getClient(sockets, { userId: sId, roomId: user.roomId, type:'student' });
+  let recipient = utils.getEmitter(sockets, { userId: sId, roomId: user.roomId, type:'student' });
   if (recipient === null) {
     console.log(`can not connect ${utils.strUser(user)} to non existing student ${sId}`);
     return;

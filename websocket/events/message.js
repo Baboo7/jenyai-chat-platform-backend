@@ -2,13 +2,13 @@ const utils = require('../utils');
 let sockets = require('../sockets');
 
 const init = (data, user) => {
-  let emitter = utils.getClient(sockets, user);
+  let emitter = utils.getEmitter(sockets, user);
   if (emitter === null) {
     return;
   }
 
   let recipientType = utils.isStudent(user) ? 'teacher' : 'student';
-  let recipient = utils.getClient(sockets, { userId: emitter.recipient, roomId: user.roomId, type: recipientType });
+  let recipient = utils.getEmitter(sockets, { userId: emitter.recipient, roomId: user.roomId, type: recipientType });
   if (recipient === null) {
     return;
   }

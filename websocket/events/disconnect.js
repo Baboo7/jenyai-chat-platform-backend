@@ -2,7 +2,7 @@ const utils = require('../utils');
 let sockets = require('../sockets');
 
 const disconnect = (user) => {
-  let emitter = utils.getClient(sockets, user);
+  let emitter = utils.getEmitter(sockets, user);
   if (emitter === null) { return; }
 
   console.log(`${utils.strUser(user)} disconnected`);
