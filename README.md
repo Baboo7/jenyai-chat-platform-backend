@@ -1,28 +1,60 @@
-# Anne
+# Back Ann
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
+Backend of the chat platform in NodeJs. The app is deployed on Heroku.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `node server.js` for a dev server. Navigate to `http://localhost:8080/` using postman for example to access the API (described below). Use `nodemon` instead of `node` if you want the app to automatically reload when you change any of the source files.
 
-## Code scaffolding
+## Folder architecture
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
+- `database`: contains all the database configs (`/config`), models (`/models`), controllers (`/controllers`) and migrations schemas (`/migrations`). The ORM used is [sequelize](http://docs.sequelizejs.com/) with PostgreSQL.
 
-## Build
+- `routes`: contains all the functions executed for each route of the API (described below).
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+- `websocket`: contains all the events (`/events`) handled by the websocket server. It also contains the `sockets` object that stores all the running chat rooms with the connected clients.
 
-## Running unit tests
+## API
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+#### Chat rooms management
 
-## Running end-to-end tests
+- `/classroom` (post): creates a new chat room.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+> Required body params:
 
-## Further help
+>> **id**: string (see config file for length) - id of the chat room
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+>> **password**: string (see config file for length) - password of the chat room
+
+
+- `/classroom/:id` (get): check if a room exists for `id`.
+
+> Required url params:
+
+>> **id**: string - id to test
+
+>> **password**: string (see config file for length) - id of the chat room
+
+
+- `/classroom/:id` (post): check if a room exists for `id` and `password`.
+
+> Required url params:
+
+>> **id**: string - id to test
+
+> Required body params:
+
+>> **password**: string - password to test
+
+
+- `/classroom/:id` (delete): delete the room `id`.
+
+> Required url params:
+
+>> **id**: string (see config file for length) - id of the room
+
+## Heroku apps
+
+- staging: https://staging-nellyana.herokuapp.com
+
+- production: https://prod-nellyana.herokuapp.com
