@@ -1,3 +1,10 @@
+const broadcastTeachers = (sockets, roomId, event, message) => {
+  Object.keys(sockets[roomId]['teacher']).forEach(id => {
+    sockets[roomId]['teacher'][id].socket.emit(event, message);
+    // sockets[user.roomId]['teacher'][id].socket.emit('del-student', { student: [ user.userId ] });
+  });
+};
+
 /*  Returns the client associated to the given id.
     params:
       sockets (object)
@@ -17,6 +24,14 @@ const getClient = (sockets, user) => {
   return client;
 };
 
+const getEmitterAndRecipient = (sockets, user) => {
+  let emitter = getClient(sockets, user);
+  if (emitter === null) { return { emitter: null, recipient: null }; }
+  let recipient = getClient(sockets, { userId: emitter.recipient, roomId: user.roomId, type: mirrorType(user) });
+
+  return { emitter, recipient };
+};
+
 const isStudent = user => {
   return user.type === 'student';
 };
@@ -25,13 +40,20 @@ const isTeacher = user => {
   return user.type === 'teacher';
 };
 
+const mirrorType = user => {
+  return user.type === 'student' ? 'teacher' : 'student';
+};
+
 const strUser = user => {
   return `[${user.roomId}][${user.type}][${user.userId}]`;
 };
 
 module.exports = {
+  broadcastTeachers,
   getClient,
+  getEmitterAndRecipient,
   isStudent,
   isTeacher,
+  mirrorType,
   strUser
 };
