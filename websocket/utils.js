@@ -5,6 +5,21 @@ const broadcastTeachers = (sockets, roomId, event, message) => {
   });
 };
 
+const connectToUnderloadedTeacher = (sockets, user, emitter) => {
+  let teacherId = getUnderloadedTeacherId(sockets, user.roomId);
+  if (teacherId === null) { return; }
+  emitter.recipient = teacherId;
+
+  let teacher = getEmitter(sockets, { roomId: user.roomId, type: 'teacher', userId: teacherId });
+  if (teacher === null) { return; }
+
+  teacher.load++;
+  teacher.socket.emit(
+    'new-students',
+    { students: [ { id: user.userId, name: emitter.name } ] }
+  );
+};
+
 /*  Returns the client associated to the given id.
     params:
       sockets (object)
@@ -35,7 +50,7 @@ const getEmitterAndRecipient = (sockets, user) => {
 const getUnderloadedTeacherId = (sockets, roomId) => {
   let teachers = Object.keys(sockets[roomId]['teacher']);
   if (teachers.length === 0) { return null; }
-  
+
   let minLoad = 100;
   let underloadedId;
   teachers.forEach(id => {
@@ -67,6 +82,7 @@ const strUser = user => {
 
 module.exports = {
   broadcastTeachers,
+  connectToUnderloadedTeacher,
   getEmitter,
   getEmitterAndRecipient,
   getUnderloadedTeacherId,
