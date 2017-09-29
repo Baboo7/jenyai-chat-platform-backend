@@ -7,7 +7,7 @@ const addMessage = (uuid, timestamp, message) => {
       timestamp,
       message: JSON.stringify(message)
     })
-    .then(data => console.log('message: ', data))
+    .then()
     .catch(err => console.error(err))
 };
 
