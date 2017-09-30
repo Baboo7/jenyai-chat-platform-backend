@@ -27,10 +27,21 @@ const connectToUnderloadedTeacher = (sockets, user, emitter) => {
   if (teacher === null) { return; }
 
   teacher.load++;
-  teacher.socket.emit(
-    'new-students',
-    { students: [ { id: user.userId, name: emitter.name } ] }
-  );
+  const controllers = require('../database/controllers');
+  controllers.conversations.retrieveMessagesById(user.userId, conversation => {
+    let messages = [];
+    conversation.forEach( obj => {
+      messages.push(JSON.parse(obj.message));
+    });
+
+    teacher.socket.emit(
+      'new-student',
+      {
+        student: { id: user.userId, name: emitter.name },
+        messages
+      }
+    );
+  });
 };
 
 /*  Returns the client associated to the given id.
