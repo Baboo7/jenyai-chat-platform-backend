@@ -8,7 +8,13 @@ const disconnect = (user) => {
   console.log(`${utils.strUser(user)} disconnected`);
   delete sockets[user.roomId][user.type][user.userId];
 
-  if (utils.isTeacher(user)) {
+  if (utils.isStudent(user)) {
+    let teacherEmitter = utils.getEmitter(sockets, { roomId: user.roomId, userId: emitter.recipient, type: 'teacher' });
+    if (teacherEmitter !== null) {
+      teacherEmitter.load--;
+      teacherEmitter.socket.emit('del-student', { student: user.userId });
+    }
+  } else if (utils.isTeacher(user)) {
     Object.keys(sockets[user.roomId]['student']).forEach(studentId => {
       let student = sockets[user.roomId]['student'][studentId];
 
