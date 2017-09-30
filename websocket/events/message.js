@@ -9,11 +9,8 @@ const init = (data, user) => {
 
   let recipientType = utils.isStudent(user) ? 'teacher' : 'student';
   let recipient = utils.getEmitter(sockets, { userId: emitter.recipient, roomId: user.roomId, type: recipientType });
-  if (recipient === null) {
-    return;
-  }
+  if (utils.isTeacher(user) && recipient === null) { return; }
 
-  console.log(`${user.type} ${emitter.name} ${user.userId} sends message to ${recipientType} ${recipient.name} ${emitter.recipient}`);
   let timestamp = new Date();
   let message = {
     emitter: user.userId,
@@ -27,7 +24,7 @@ const init = (data, user) => {
   };
 
   emitter.socket.emit('message', message);
-  recipient.socket.emit('message', message);
+  if (recipient !== null) { recipient.socket.emit('message', message); }
 
   let studentUuid = utils.isStudent(user) ? user.userId : emitter.recipient;
   const controllers = require('../../database/controllers');
