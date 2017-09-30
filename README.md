@@ -14,6 +14,54 @@ Run `node server.js` for a dev server. Navigate to `http://localhost:8080/` usin
 
 - `websocket`: contains all the events (`/events`) handled by the websocket server. It also contains the `sockets` object that stores all the running chat rooms with the connected clients.
 
+## Websocket
+
+#### Received events
+
+- `connect-student` (teacher): connects a teacher to a student.
+
+> **id**: uuid - id of the student to connect to
+
+- `disconnect`: ends a connection.
+
+- `init`: initializes a connection.
+
+> **emitterType**: string - either 'student' or 'teacher'
+
+> **name**: string - name of the emitter
+
+> **roomId**: string - name of the room to connect to
+
+- `message`: transmits a message.
+
+Only text messages at the moment.
+
+> **payload**: string - text message to transmit
+
+#### Emitted events
+
+- `connect-student` (teacher): connects a teacher to a student.
+
+> **id**: uuid - id of the student to connect to
+
+- `del-student` (teacher): remove a student from teacher view.
+
+> **student**: uuid - id of the student to remove
+
+- `new-student` (teacher): connects a teacher to a student.
+
+> **student**: object - contains ↓↓↓
+
+>> **id**: uuid - id of the student
+
+>> **name**: string - name of the student
+
+> **messages**: array - contains all the messages of the conversation
+
+- `message`: sends a message.
+
+> **message**: object - message to send
+
 ## API
 
 #### Chat rooms management
@@ -52,6 +100,10 @@ Run `node server.js` for a dev server. Navigate to `http://localhost:8080/` usin
 > Required url params:
 
 >> **id**: string (see config file for length) - id of the room
+
+## Unit tests
+
+Run the test with the command `npm test`. All tests files are stored in the `test` folder.
 
 ## Heroku apps
 
