@@ -1,7 +1,6 @@
 const broadcastTeachers = (sockets, roomId, event, message) => {
   Object.keys(sockets[roomId]['teacher']).forEach(id => {
     sockets[roomId]['teacher'][id].socket.emit(event, message);
-    // sockets[user.roomId]['teacher'][id].socket.emit('del-student', { student: [ user.userId ] });
   });
 };
 
@@ -42,6 +41,19 @@ const connectToUnderloadedTeacher = (sockets, user, emitter) => {
       }
     );
   });
+};
+
+/*  Returns the number of connected teachers in a room.
+
+    PARAMS
+      sockets (object)
+      roomId (string): id of the room
+
+    RETURN
+      the number of connected teachers in the room
+*/
+const countTeachers = (sockets, roomId) => {
+  return Object.keys(sockets[roomId]['teacher']).length;
 };
 
 /*  Returns the client associated to the given id.
@@ -110,6 +122,7 @@ const strUser = user => {
 module.exports = {
   broadcastTeachers,
   connectToUnderloadedTeacher,
+  countTeachers,
   getEmitter,
   getEmitterAndRecipient,
   getUnderloadedTeacherId,

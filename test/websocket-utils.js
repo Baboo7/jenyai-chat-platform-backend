@@ -33,4 +33,18 @@ describe('websocket/utils', () => {
 
     expect(utils.getUnderloadedTeacherId(sockets, 'test')).to.equal(null);
   });
+
+  it('countTeachers > should return the number of connected teachers', () => {
+    let sockets = {
+      'test': {
+        teacher: {
+          0: { test: '' },
+          1: { test: '' },
+          2: { test: '' },
+        }
+      }
+    };
+
+    expect(utils.countTeachers(sockets, 'test')).to.equal(3);
+  });
 });
