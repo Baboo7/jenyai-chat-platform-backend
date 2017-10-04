@@ -48,6 +48,10 @@ Only text messages at the moment.
 
 > **student**: uuid - id of the student to remove
 
+- `init`: initializes a connection.
+
+> **id**: uuid - id of the connected entity
+
 - `new-student` (teacher): connects a teacher to a student.
 
 > **student**: object - contains ↓↓↓

@@ -23,6 +23,7 @@ const init = (data, socket, user) => {
 
   sockets[roomId][emitterType][user.userId] = { name, socket };
   let emitter = sockets[roomId][emitterType][user.userId];
+  emitter.socket.emit('init', { id: user.userId });
   if (utils.isStudent(user)) {
     utils.connectToUnderloadedTeacher(sockets, user, emitter);
   } else if (utils.isTeacher(user)) {
@@ -31,7 +32,6 @@ const init = (data, socket, user) => {
     if (utils.countTeachers(sockets, roomId) === 1) {
       Object.keys(sockets[roomId]['student']).forEach( id => {
         let studentUser = { roomId, userId: id, type: 'student' };
-        console.log(studentUser);
         let studentEmitter = utils.getEmitter(sockets, studentUser);
         utils.connectToUnderloadedTeacher(sockets, studentUser, studentEmitter);
       });
