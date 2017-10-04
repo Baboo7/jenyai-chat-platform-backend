@@ -60,7 +60,21 @@ Only text messages at the moment.
 
 - `message`: sends a message.
 
-> **message**: object - message to send
+> **message**: object - message to send ↓↓↓
+
+>> **emitter**: uuid - id of the emitter
+
+>> **emitterType**: string - either 'student' or 'teacher'
+
+>> **recipient**: uuid - id of the recipient
+
+>> **timestamp**: timestamp - date when the message was issued
+
+>> **message**: object - contains the message ↓↓↓
+
+>>> **type**: string - type of the message ('text', 'video'...)
+
+>>> **payload**: object - contains all the required data associated to the message type
 
 ## API
 
