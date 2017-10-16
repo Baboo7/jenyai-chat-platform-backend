@@ -14,6 +14,26 @@ Run `node server.js` for a dev server. Navigate to `http://localhost:8080/` usin
 
 - `websocket`: contains all the events (`/events`) handled by the websocket server. It also contains the `sockets` object that stores all the running chat rooms with the connected clients.
 
+## Database
+
+#### PostgreSQL
+
+The DBMS used is PostgreSQL. To connect to local database run `sudo -u <username> psql <database>`. The `<database>` parameter is optional.
+
+Useful commands:
+
+- `\l`: list databases
+
+- `\dt`: list tables
+
+- `\q`: quit psql
+
+#### Sequelize
+
+The ORM used is [sequelize](http://docs.sequelizejs.com/). It is helpful for database migration, seeding and requesting.
+
+- `sequelize model:generate --name <model_name> --attributes <atttr1>:<type1>,<atttr2>:<type2>`: generates a new model with the associated migration
+
 ## Websocket
 
 #### Received events
@@ -125,6 +145,6 @@ Run the test with the command `npm test`. All tests files are stored in the `tes
 
 ## Heroku apps
 
-- staging: https://staging-nellyana.herokuapp.com
+- staging: https://staging-jenyai.herokuapp.com
 
-- production: https://prod-nellyana.herokuapp.com
+- production: https://prod-jenyai.herokuapp.com
