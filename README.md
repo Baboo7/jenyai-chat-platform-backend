@@ -100,6 +100,14 @@ Only text messages at the moment.
 
 >>> **payload**: object - contains all the required data associated to the message type
 
+- `typing-off`: indicates that the emitter has cleared h.is.er input.
+
+> **emitter**: uuid - id of the emitter
+
+- `typing-on`: indicates that the emitter is typing a message.
+
+> **emitter**: uuid - id of the emitter
+
 ## API
 
 #### Chat rooms management
