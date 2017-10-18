@@ -1,21 +1,21 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('conversations', {
+    return queryInterface.createTable('rooms', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      uuid: {
-        type: Sequelize.UUID
+      name: {
+        type: Sequelize.STRING
       },
-      timestamp: {
-        type: Sequelize.DATE
+      password: {
+        type: Sequelize.STRING
       },
-      message: {
-        type: Sequelize.JSON
+      teachers: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
