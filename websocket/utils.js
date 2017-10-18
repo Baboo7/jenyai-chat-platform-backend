@@ -1,9 +1,3 @@
-const broadcastTeachers = (sockets, roomId, event, message) => {
-  Object.keys(sockets[roomId]['teacher']).forEach(id => {
-    sockets[roomId]['teacher'][id].socket.emit(event, message);
-  });
-};
-
 /*  Connects a student to the teacher in charge of the least number of students.
 
     PARAMS
@@ -120,7 +114,6 @@ const strUser = user => {
 };
 
 module.exports = {
-  broadcastTeachers,
   connectToUnderloadedTeacher,
   countTeachers,
   getEmitter,
