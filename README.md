@@ -30,9 +30,17 @@ Useful commands:
 
 #### Sequelize
 
-The ORM used is [sequelize](http://docs.sequelizejs.com/). It is helpful for database migration, seeding and requesting.
+The ORM used is [sequelize](http://docs.sequelizejs.com/). It is helpful for database migration, seeding and requesting. Run `./prepare.sh` to create the database `jenyai` defined in `database/config/config.json` and the tables defined by the models.
 
-- `sequelize model:generate --name <model_name> --attributes <atttr1>:<type1>,<atttr2>:<type2>`: generates a new model with the associated migration
+- `sequelize model:generate --name <model_name> --attributes <atttr1>:<type1>,<atttr2>:<type2>`: generates a new model with the associated migration. It automatically creates `id`, `createdAt` and `updatedAt` fields.
+
+- `sequelize seed:generate --name <seed_name>`: generates a new seeder.
+
+#### Tables
+
+- conversations: stores all the conversations
+
+- rooms: stores all the available chat rooms
 
 ## Websocket
 
