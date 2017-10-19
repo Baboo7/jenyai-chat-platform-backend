@@ -1,24 +1,24 @@
-const utils = require('../utils');
+const userManager = require('../managers/user');
 let sockets = require('../sockets');
 
 const connectStudent = (data, user) => {
-  let emitter = utils.getEmitter(sockets, user);
+  let emitter = userManager.getEmitter(sockets, user);
   if (emitter === null) { return; }
 
   if (user.type !== 'teacher') {
-    console.error(`${utils.strUser(user)} fired 'connect-student' event but is not a teacher`);
+    console.error(`${userManager.strUser(user)} fired 'connect-student' event but is not a teacher`);
     return;
   }
 
   let sId = data.id;
-  let recipient = utils.getEmitter(sockets, { userId: sId, roomId: user.roomId, type:'student' });
+  let recipient = userManager.getEmitter(sockets, { userId: sId, roomId: user.roomId, type:'student' });
   if (recipient === null) {
-    console.log(`can not connect ${utils.strUser(user)} to non existing student ${sId}`);
+    console.log(`can not connect ${userManager.strUser(user)} to non existing student ${sId}`);
     return;
   }
 
   if (recipient.recipient !== undefined && recipient.recipient !== user.userId) {
-    console.log(`can not connect ${utils.strUser(user)} to student ${sId} who is already connected to an other teacher`);
+    console.log(`can not connect ${userManager.strUser(user)} to student ${sId} who is already connected to an other teacher`);
     return;
   }
 

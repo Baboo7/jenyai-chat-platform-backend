@@ -2,7 +2,7 @@ let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 
-const config = require('./config');
+const config = require('./configs/config');
 const routes = require('./routes');
 const setUpWebsocket = require('./websocket/websocket');
 

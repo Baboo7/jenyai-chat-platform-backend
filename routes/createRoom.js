@@ -1,4 +1,4 @@
-const config = require('../config');
+const config = require('../configs/config');
 const roomsCtrl = require('../database/controllers/rooms');
 
 const createRoom = (req, res) => {

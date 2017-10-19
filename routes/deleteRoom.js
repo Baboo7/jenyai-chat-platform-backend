@@ -1,4 +1,4 @@
-const config = require('../config');
+const config = require('../configs/config');
 const sockets = require('../websocket/sockets');
 
 const deleteRoom = (req, res) => {
