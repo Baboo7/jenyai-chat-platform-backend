@@ -50,7 +50,7 @@ const getAll = (req, res) => {
 
         let options = {
           headers: {
-            'content-disposition': 'attachment; filename="conversations.csv"'
+            'content-disposition': `attachment; filename="conversations-${(new Date()).toJSON()}.csv"`
           }
         };
 
