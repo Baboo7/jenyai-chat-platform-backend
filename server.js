@@ -3,7 +3,7 @@ let app = express();
 let bodyParser = require('body-parser');
 
 const config = require('./configs/config');
-const routes = require('./routes');
+const router = require('./router');
 const setUpWebsocket = require('./websocket/websocket');
 
 // configuration application =================
@@ -12,16 +12,13 @@ app.use(bodyParser.urlencoded({'extended':'true'}));            // parse applica
 app.use(bodyParser.json());                                     // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
-app.post('/classroom', routes.createRoom);
-app.get('/classroom/:id', routes.getRoom);
-app.post('/classroom/:id', routes.getRoomWithPassword);
-app.delete('/classroom/:id', routes.deleteRoom);
+app.use('/', router);
 
 let server = app.listen(config.port);
 

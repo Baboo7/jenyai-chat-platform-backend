@@ -1,7 +1,5 @@
 const config = {
-  port: process.env.PORT || 8080,
-  roomIdLength: 6,
-  passwordLength: 8
+  port: process.env.PORT || 8080
 };
 
 module.exports = config;

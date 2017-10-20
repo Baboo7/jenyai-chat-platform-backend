@@ -45,6 +45,23 @@ const find = (name, callback) => {
   .catch(err => console.error(err))
 };
 
+/*  Fetches all rooms from database.
+
+    PARAMS
+      callback (function): function called in case of success
+
+    RETURN
+      none
+*/
+const findAll = (callback) => {
+  return rooms
+  .findAll({
+    raw: true
+  })
+  .then(data => callback(data))
+  .catch(err => console.error(err))
+};
+
 /*  Fetches a room by its name and password in the rooms database.
 
     PARAMS
@@ -90,5 +107,6 @@ module.exports = {
   create,
   delete: deleteRoom,
   find,
+  findAll,
   findPassword
 };

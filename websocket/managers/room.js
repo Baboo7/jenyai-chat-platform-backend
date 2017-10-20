@@ -33,6 +33,28 @@ const createIfDoesntExistInRAM = (sockets, name) => {
   }
 };
 
+/*  Deletes a room from the RAM.
+
+    PARAMS
+      sockets (object)
+      roomId (string): name of the room
+
+    RETURN
+      none
+*/
+const deleteFromRAM = (sockets, roomId) => {
+  if (!sockets[roomId]) {
+    return;
+  }
+
+  let clients = Object.keys(sockets[roomId]['teacher']).concat(Object.keys(sockets[roomId]['student']));
+  clients.forEach(client => {
+    client.socket.emit('disconnect', {});
+  });
+
+  delete sockets[roomId];
+};
+
 /*  Retrieves a room from the database.
 
     PARAMS
@@ -52,5 +74,6 @@ const doesExistInDb = (name, callback) => {
 module.exports = {
   countTeachers,
   createIfDoesntExistInRAM,
+  deleteFromRAM,
   doesExistInDb
 };

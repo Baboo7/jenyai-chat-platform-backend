@@ -1,43 +1,47 @@
-const config = require('../configs/config');
-const roomsCtrl = require('../database/controllers/rooms');
+const roomsCtrl = require('../../database/controllers/rooms');
 
-const getRoomWithPassword = (req, res) => {
-  console.info('route > get classroom with password');
+/*  Searches for a room in the database by its name and password.
+
+    PARAMS
+      req (object): request object. Must contains the following properties in its body property
+        id (string): name of the room
+        password (string): password of the room
+      res (object): response object
+
+    RETURN
+      none
+*/
+const connectTeacher = (req, res) => {
   // Check parameters presence
-  let id = req.params.id;
-  if (id === undefined) {
-    console.error('missing id parameter');
+  let id = req.body.id;
+  if (!id) {
     return res.status(200).json({ success: false });
   }
 
   let password = req.body.password;
-  if (password === undefined) {
-    console.error('missing password parameter');
+  if (!password) {
     return res.status(200).json({ success: false });
   }
 
   // Check parameters properties
-  if (id.length !== config.roomIdLength) {
-    console.error(`classroom id ${id} has not the right size`);
+  if (typeof id !== 'string' || typeof password !== 'string') {
     return res.status(200).json({
        success: false,
        message: 'The connection could not be established with the classroom. Are the credentials valid?'
      });
   }
 
-  // Check if room exist in database
+  // Check if room exists in database
   roomsCtrl.findPassword(id, password, room => {
     if (room === null) {
-      console.info(`classroom ${id} not found`);
       return res.status(200).json({
         success: false,
         message: 'The connection could not be established with the classroom. Are the credentials valid?'
       });
     }
 
-    console.info(`classroom ${id} successfully found`);
     return res.status(200).json({ success: true });
   });
 };
 
-module.exports = getRoomWithPassword;
+module.exports = connectTeacher;
