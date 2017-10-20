@@ -47,9 +47,12 @@ const deleteFromRAM = (sockets, roomId) => {
     return;
   }
 
-  let clients = Object.keys(sockets[roomId]['teacher']).concat(Object.keys(sockets[roomId]['student']));
-  clients.forEach(client => {
-    client.socket.emit('disconnect', {});
+  Object.keys(sockets[roomId]['teacher']).forEach(id => {
+    sockets[roomId]['teacher'][id].socket.emit('disconnect', {});
+  });
+
+  Object.keys(sockets[roomId]['student']).forEach(id => {
+    sockets[roomId]['student'][id].socket.emit('disconnect', {});
   });
 
   delete sockets[roomId];
