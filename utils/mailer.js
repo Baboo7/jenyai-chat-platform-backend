@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+
 const mailConfig = require('../configs/mail');
 const mailTemplates = require('./mailTemplates');
 
@@ -17,10 +18,13 @@ const sendMail = (recipients, templateName, templateData, callback) => {
   if (typeof callback === 'undefined') { callback = () => {}; }
 
   let transport = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: mailConfig.user,
-      pass: mailConfig.pass
+        type: 'OAuth2',
+        user: mailConfig.user,
+        accessToken: mailConfig.accessToken
     }
   });
 
