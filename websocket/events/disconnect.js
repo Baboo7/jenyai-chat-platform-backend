@@ -1,25 +1,31 @@
 const userManager = require('../managers/user');
 let sockets = require('../sockets');
 
-const disconnect = (user) => {
-  let emitter = userManager.getEmitter(sockets, user);
-  if (emitter === null) { return; }
+/*  Disconnects a client.
 
-  console.log(`${userManager.strUser(user)} disconnected`);
-  delete sockets[user.roomId][user.type][user.userId];
+    PARAMS
+      socketId (string): socket id
+
+    RETURN
+      none
+*/
+const disconnect = (socketId) => {
+  let user = userManager.getEmitter(sockets, socketId);
+  if (user === null) { return; }
+
+  userManager.deleteEmitter(sockets, user.socket.id);
 
   if (userManager.isStudent(user)) {
-    let teacherEmitter = userManager.getEmitter(sockets, { roomId: user.roomId, userId: emitter.recipient, type: 'teacher' });
+    let teacherEmitter = userManager.getEmitter(sockets, user.recipient);
     if (teacherEmitter !== null) {
       teacherEmitter.load--;
-      teacherEmitter.socket.emit('del-student', { student: user.userId });
+      teacherEmitter.socket.emit('del-student', { student: user.socket.id });
     }
   } else if (userManager.isTeacher(user)) {
-    Object.keys(sockets[user.roomId]['student']).forEach(studentId => {
-      let student = sockets[user.roomId]['student'][studentId];
-
-      if (student.recipient && student.recipient === user.userId) {
-        userManager.connectToUnderloadedTeacher(sockets, { roomId: user.roomId, type: 'student', userId: studentId }, student);
+    Object.keys(sockets).forEach(id => {
+      let u = userManager.getEmitter(sockets, id);
+      if (u.room === user.room && userManager.isStudent(u) && u.recipient && u.recipient === user.socket.id) {
+        userManager.connectToUnderloadedTeacher(sockets, u.socket.id);
       }
     });
   }

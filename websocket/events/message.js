@@ -1,28 +1,32 @@
+const controllers = require('../../database/controllers');
 const userManager = require('../managers/user');
 const parser = require('../message-parser');
 let sockets = require('../sockets');
 
-const message = (data, user) => {
-  let emitter = userManager.getEmitter(sockets, user);
-  if (emitter === null) {
-    return;
-  }
+/*  Transmits a message from one client to an other.
 
-  let recipientType = userManager.isStudent(user) ? 'teacher' : 'student';
-  let recipient = userManager.getEmitter(sockets, { userId: emitter.recipient, roomId: user.roomId, type: recipientType });
+    PARAMS
+      data (object): object sent by the client. It must contain
+        payload (string): text message sent by the user
+      socketId (string): socket id
+
+    RETURN
+      none
+*/
+const message = (data, socketId) => {
+  let user = userManager.getEmitter(sockets, socketId);
+  if (user === null) { return; }
+
+  let recipient = userManager.getEmitter(sockets, user.recipient);
   if (userManager.isTeacher(user) && recipient === null) { return; }
 
-  let msg = parser(data, user, emitter);
-  if (msg === null) {
-    console.error(`empty message from ${userManager.strUser(user)}`);
-    return;
-  }
+  let msg = parser(data, user);
+  if (msg === null) { return; }
 
-  emitter.socket.emit('message', msg);
+  user.socket.emit('message', msg);
   if (recipient !== null) { recipient.socket.emit('message', msg); }
 
-  let studentUuid = userManager.isStudent(user) ? user.userId : emitter.recipient;
-  const controllers = require('../../database/controllers');
+  let studentUuid = userManager.isStudent(user) ? user.socket.id : user.recipient;
 
   user.timestamp = msg.timestamp;
   controllers.conversations.addMessage(studentUuid, user.timestamp, msg);

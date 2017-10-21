@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       uuid: {
-        type: Sequelize.UUID
+        type: Sequelize.STRING
       },
       timestamp: {
         type: Sequelize.DATE

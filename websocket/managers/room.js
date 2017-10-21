@@ -1,61 +1,25 @@
 'use strict';
 const roomsCtrl = require('../../database/controllers/rooms');
+const userManager = require('./user');
 
 /*  Returns the number of connected teachers in a room.
 
     PARAMS
       sockets (object)
-      roomId (string): id of the room
+      room (string): name of the room
 
     RETURN
       (number): the number of connected teachers in the room
 */
-const countTeachers = (sockets, roomId) => {
-  return Object.keys(sockets[roomId]['teacher']).length;
-};
-
-/*  Creates a new room in the sockets object.
-
-    PARAMS
-      sockets (object)
-      name (string): name of the room
-      password (string): password of the room
-
-    RETURN
-      none
-*/
-const createIfDoesntExistInRAM = (sockets, name) => {
-  if (!sockets[name]) {
-    sockets[name] = {
-      student: { },
-      teacher: { }
+const countTeachers = (sockets, room) => {
+  let counter = 0;
+  Object.keys(sockets).forEach(socketId => {
+    let user = sockets[socketId];
+    if (userManager.isTeacher(user) && user.room === room) {
+      counter++;
     }
-  }
-};
-
-/*  Deletes a room from the RAM.
-
-    PARAMS
-      sockets (object)
-      roomId (string): name of the room
-
-    RETURN
-      none
-*/
-const deleteFromRAM = (sockets, roomId) => {
-  if (!sockets[roomId]) {
-    return;
-  }
-
-  Object.keys(sockets[roomId]['teacher']).forEach(id => {
-    sockets[roomId]['teacher'][id].socket.emit('disconnect', {});
   });
-
-  Object.keys(sockets[roomId]['student']).forEach(id => {
-    sockets[roomId]['student'][id].socket.emit('disconnect', {});
-  });
-
-  delete sockets[roomId];
+  return counter;
 };
 
 /*  Retrieves a room from the database.
@@ -76,7 +40,5 @@ const doesExistInDb = (name, callback) => {
 
 module.exports = {
   countTeachers,
-  createIfDoesntExistInRAM,
-  deleteFromRAM,
   doesExistInDb
 };

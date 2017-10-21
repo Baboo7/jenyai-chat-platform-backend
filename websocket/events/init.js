@@ -3,47 +3,52 @@ const userManager = require('../managers/user');
 const mailer = require('../../utils/mailer');
 let sockets = require('../sockets');
 
-const init = (data, socket, user) => {
-  let emitterType = data.emitterType;
-  let name = data.name;
-  let roomId = data.roomId;
+/*  Initializes a user in the socket object.
 
-  if (['student', 'teacher'].indexOf(emitterType) === -1) {
-    console.error(`unexpected emitter type ${emitterType}`);
-    return;
-  }
+    PARAMS
+      socket (object): socket freshly created
+      decryptedToken (object): object from the decrypted token. It must contain
+        unm (string): user name
+        utp (string): user type, either 'student' or 'teacher'
+        rnm (string): room name
 
-  roomManager.doesExistInDb(roomId, room => {
-    if (room === null) {
-      return;
-    }
+    RETURN
+      none
+*/
+const init = (socket, decryptedToken) => {
+  roomManager.doesExistInDb(decryptedToken.rnm, room => {
+    if (room === null) { return; }
 
-    roomManager.createIfDoesntExistInRAM(sockets, roomId);
-
-    user.type = emitterType;
-    user.roomId = roomId;
-
-    console.log(`new ${emitterType} ${name} (${user.userId}) connected to room ${roomId}`);
-
-    sockets[roomId][emitterType][user.userId] = { name, socket };
-    let emitter = sockets[roomId][emitterType][user.userId];
-    emitter.socket.emit('init', { id: user.userId });
-
-    let nbTeachers = roomManager.countTeachers(sockets, roomId);
+    sockets[socket.id] = {
+      name: decryptedToken.unm,
+      type: decryptedToken.utp,
+      room: decryptedToken.rnm,
+      socket: socket
+    };
+    let user = sockets[socket.id];
+    socket.emit('init', { id: socket.id });
+    let nbTeachers = roomManager.countTeachers(sockets, user.room);
     if (userManager.isStudent(user)) {
       if (nbTeachers === 0) {
-        mailer.sendMail(room.teachers, 'new-student', { roomName: roomId , studentName: name });
+
+        let mailData = {
+          roomName: user.room ,
+          studentName: user.name
+        };
+
+        mailer.sendMail(room.teachers, 'new-student', mailData);
       } else {
-        userManager.connectToUnderloadedTeacher(sockets, user, emitter);
+        userManager.connectToUnderloadedTeacher(sockets, user);
       }
     } else if (userManager.isTeacher(user)) {
-      emitter.load = 0;
+      user.load = 0;
 
       if (nbTeachers === 1) {
-        Object.keys(sockets[roomId]['student']).forEach( id => {
-          let studentUser = { roomId, userId: id, type: 'student' };
-          let studentEmitter = userManager.getEmitter(sockets, studentUser);
-          userManager.connectToUnderloadedTeacher(sockets, studentUser, studentEmitter);
+        Object.keys(sockets).forEach(socketId => {
+          let u = userManager.getEmitter(sockets, socketId);
+          if (u.room === user.room && userManager.isStudent(u)) {
+            userManager.connectToUnderloadedTeacher(sockets, u);
+          }
         });
       }
     }

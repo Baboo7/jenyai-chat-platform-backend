@@ -5,37 +5,38 @@ const conversationsCtrl = require('../../database/controllers/conversations');
     PARAMS
       sockets (object)
       user (object): has to be a student user
-      emitter (object): has to be a student emitter
 
     RETURN
       none
 */
-const connectToUnderloadedTeacher = (sockets, user, emitter) => {
-  let teacherId = getUnderloadedTeacherId(sockets, user.roomId);
+const connectToUnderloadedTeacher = (sockets, user) => {
+  let teacherId = getUnderloadedTeacherId(sockets, user.room);
   if (teacherId === null) {
-    delete emitter.recipient;
+    delete user.recipient;
     return;
   }
-  emitter.recipient = teacherId;
+  user.recipient = teacherId;
 
-  let teacher = getEmitter(sockets, { roomId: user.roomId, type: 'teacher', userId: teacherId });
+  let teacher = getEmitter(sockets, teacherId);
   if (teacher === null) { return; }
 
   teacher.load++;
 
-  conversationsCtrl.retrieveMessagesById(user.userId, conversation => {
+  conversationsCtrl.retrieveMessagesById(user.socket.id, conversation => {
     let messages = [];
     conversation.forEach( obj => {
       messages.push(JSON.parse(obj.message));
     });
 
-    teacher.socket.emit(
-      'new-student',
-      {
-        student: { id: user.userId, name: emitter.name },
-        messages
-      }
-    );
+    let msg = {
+      student: {
+        id: user.socket.id,
+        name: user.name
+      },
+      messages: messages
+    };
+
+    teacher.socket.emit('new-student', msg);
   });
 };
 
@@ -43,21 +44,14 @@ const connectToUnderloadedTeacher = (sockets, user, emitter) => {
 
     PARAMS
       sockets (object)
-      user (object): path to the user in the socket object
+      socketId (number): id of the emitter
 
     RETURN
       (object): the client object or null if not found
 */
-const getEmitter = (sockets, user) => {
-  let client = null;
-  if (sockets[user.roomId]
-    && sockets[user.roomId][user.type]
-    && sockets[user.roomId][user.type][user.userId]) {
-    client = sockets[user.roomId][user.type][user.userId];
-  } else {
-    console.error(`no client found for [${user.roomId}][${user.type}][${user.userId}]`);
-  }
-
+const getEmitter = (sockets, socketId) => {
+  let client = sockets[socketId];
+  if (!client) { client = null; }
   return client;
 };
 
@@ -65,40 +59,61 @@ const getEmitter = (sockets, user) => {
 
     PARAMS
       sockets (object)
-      user (object): path to the user in the socket object
+      socketId (number): id of the emitter
 
     RETURN
       (object)
         emitter (object): the emitter object or null if not found
         recipient (object): the recipient object or null if not found
 */
-const getEmitterAndRecipient = (sockets, user) => {
-  let emitter = getEmitter(sockets, user);
-  if (emitter === null) { return { emitter: null, recipient: null }; }
-  let recipient = getEmitter(sockets, { userId: emitter.recipient, roomId: user.roomId, type: mirrorType(user) });
+const getEmitterAndRecipient = (sockets, socketId) => {
+  let emitter = getEmitter(sockets, socketId);
+  if (!emitter) { return { emitter: null, recipient: null }; }
+  let recipient = getEmitter(sockets, emitter.recipient);
 
-  return { emitter, recipient };
+  return { emitter: emitter, recipient: recipient };
+};
+
+/*  Deletes an emitter.
+
+    PARAMS
+      sockets (object)
+      socketId (number): id of the emitter
+
+    RETURN
+      none
+*/
+const deleteEmitter = (sockets, socketId) => {
+  delete sockets[socketId];
 };
 
 /*  Retrieves the id of the teacher in charge of the least number of students.
 
     PARAMS
       sockets (object)
-      roomId (string): room in which to perform the search
+      room (string): room in which to perform the search
 
     RETURN
-      (number): the teacher id or null if no teacher is connected
+      (number): the teacher's id or null if no teacher is connected
 */
-const getUnderloadedTeacherId = (sockets, roomId) => {
-  let teachers = Object.keys(sockets[roomId]['teacher']);
+const getUnderloadedTeacherId = (sockets, room) => {
+  // retrieve all teachers connected to the room
+  let teachers = [ ];
+  Object.keys(sockets).forEach(socketId => {
+    let u = sockets[socketId];
+    if (u.room === room && isTeacher(u)) {
+      teachers.push(u);
+    }
+  });
   if (teachers.length === 0) { return null; }
 
-  let minLoad = 100;
-  let underloadedId;
-  teachers.forEach(id => {
-    let load = sockets[roomId]['teacher'][id].load;
+  // find the under loaded one
+  let minLoad = 10000;
+  let underloadedId = null;
+  teachers.forEach(teacher => {
+    let load = teacher.load;
     if (load < minLoad) {
-      underloadedId = id;
+      underloadedId = teacher.socket.id;
       minLoad = load;
     }
   });
@@ -130,18 +145,6 @@ const isTeacher = user => {
   return user.type === 'teacher';
 };
 
-/*  Returns the opposite type of the given user.
-
-    PARAMS
-      user (object): path to the user in the socket object
-
-    RETURN
-      (string): 'student' if the user is a teacher, 'teacher' if the user is a student
-*/
-const mirrorType = user => {
-  return user.type === 'student' ? 'teacher' : 'student';
-};
-
 /*  Stringifies a user.
 
     PARAMS
@@ -151,16 +154,16 @@ const mirrorType = user => {
       (string): the user stringified
 */
 const strUser = user => {
-  return `[${user.roomId}][${user.type}][${user.userId}]`;
+  return `${user.name} (${user.type}, ${user.socket.id})`;
 };
 
 module.exports = {
   connectToUnderloadedTeacher,
   getEmitter,
   getEmitterAndRecipient,
+  deleteEmitter,
   getUnderloadedTeacherId,
   isStudent,
   isTeacher,
-  mirrorType,
   strUser
 };

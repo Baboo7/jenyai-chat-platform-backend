@@ -26,8 +26,6 @@ const deleteRoom = (req, res) => {
 
   // Delete room from database and RAM of the server
   roomsCtrl.delete(id, () => {
-    roomManager.deleteFromRAM(sockets, id);
-
     return res.status(200).json({ success: true });
   });
 };

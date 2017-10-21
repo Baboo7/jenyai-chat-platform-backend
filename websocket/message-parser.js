@@ -1,3 +1,11 @@
+/*  Indicates if a string is empty or only contains space chars.
+
+    PARAMS
+      str (string): string to check
+
+    RETURN
+      (boolean): true if empty, false otherwise
+*/
 const isEmpty = str => {
   if (!str || str.length === 0 || !/\S+/.test(str)) {
     return true;
@@ -5,15 +13,22 @@ const isEmpty = str => {
   return false;
 };
 
-const parser = (data, user, emitter) => {
-  if (!data || isEmpty(data.payload)) {
-    return null;
-  }
+/*  Parses a message.
+
+    PARAMS
+      data (object): message data
+      user (object): user information
+
+    RETURN
+      (object): parsed message or null if invalid
+*/
+const parser = (data, user) => {
+  if (!data || isEmpty(data.payload)) { return null; }
 
   let metamsg = {
-    emitter: user.userId,
+    emitter: user.socket.id,
     emitterType: user.type,
-    recipient: emitter.recipient,
+    recipient: user.recipient,
     timestamp: new Date(),
   };
 

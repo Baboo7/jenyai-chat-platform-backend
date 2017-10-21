@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var conversations = sequelize.define('conversations', {
-    uuid: DataTypes.UUID,
+    uuid: DataTypes.STRING,
     timestamp: DataTypes.DATE,
     message: DataTypes.JSON
   }, {
