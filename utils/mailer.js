@@ -22,9 +22,12 @@ const sendMail = (recipients, templateName, templateData, callback) => {
     port: 465,
     secure: true,
     auth: {
-        type: 'OAuth2',
-        user: mailConfig.user,
-        accessToken: mailConfig.accessToken
+      type: 'OAuth2',
+      user: mailConfig.user,
+      clientId: mailConfig.clientId,
+      clientSecret: mailConfig.clientSecret,
+      refreshToken: mailConfig.refreshToken,
+      accessToken: mailConfig.accessToken
     }
   });
 
