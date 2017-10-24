@@ -9,7 +9,13 @@ const setUpWebsocket = server => {
   io.on('connection', socket => {
 
     socket.on('init', data => {
-      authMW(data.token, decryptedToken => eventHandler.init(socket, decryptedToken));
+      authMW(data.token,
+        // valid token
+        decryptedToken => eventHandler.init(socket, decryptedToken),
+        // On invalid token
+        () => {
+          socket.disconnect(true);
+        });
     });
 
     socket.on('connect-student', data => eventHandler.connectStudent(data, socket.id));
