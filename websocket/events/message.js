@@ -29,6 +29,14 @@ const message = (data, socketId) => {
   let studentUuid = userManager.isStudent(user) ? user.socket.id : user.recipient;
 
   user.timestamp = msg.timestamp;
+
+  msg.emitterName = user.name;
+  msg.room = user.room;
+  if (recipient !== null) {
+    msg.recipientType = recipient.type;
+    msg.recipientName = recipient.name;
+  }
+
   controllers.conversations.addMessage(studentUuid, user.timestamp, msg);
 };
 

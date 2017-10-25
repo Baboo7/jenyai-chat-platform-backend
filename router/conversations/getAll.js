@@ -23,7 +23,7 @@ const getAll = (req, res) => {
 
     // Retrieve conversations from database
     conversationsCtrl.retrieveAll(conversations => {
-      fs.writeSync(fd, 'conversation id, issuance date, message, emitter, emitterType, recipient\n');
+      fs.writeSync(fd, 'conversation id, issuance date, message, room, emitter id, emitter type, emitter name, recipient id, recipient type, recipient name\n');
 
       conversations.forEach(c => {
         let msg = JSON.parse(c.message);
@@ -34,9 +34,13 @@ const getAll = (req, res) => {
         line += ',' + c.timestamp;
         if (msg.message.type === 'text') { line += `,"${msg.message.payload}"`; }
         else { line += ','; }
+        line += ',' + msg.room;
         line += ',' + msg.emitter;
         line += ',' + msg.emitterType;
+        line += ',' + msg.emitterName;
         line += ',' + msg.recipient;
+        line += ',' + msg.recipientType;
+        line += ',' + msg.recipientName;
 
         line += '\n';
         fs.writeSync(fd, line);
