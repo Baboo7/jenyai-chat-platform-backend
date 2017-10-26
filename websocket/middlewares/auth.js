@@ -1,4 +1,4 @@
-const tokenManager = require('../utils/tokenManager');
+const tokenManager = require('../../utils/tokenManager');
 
 /*  Decrypts a token.
 

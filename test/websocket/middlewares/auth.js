@@ -1,9 +1,9 @@
 'use strict';
-let tokenManager = require('../utils/tokenManager');
-let authMW = require('../websocket/authMW');
+let tokenManager = require('../../../utils/tokenManager');
+let authMW = require('../../../websocket/middlewares/auth');
 let expect = require('chai').expect;
 
-describe('websocket/authMW', () => {
+describe('authMW', () => {
   it('should validate authentication', done => {
     let user = {
       roomId: 'a',

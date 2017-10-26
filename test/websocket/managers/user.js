@@ -1,5 +1,5 @@
 'use strict';
-let userManager = require('../websocket/managers/user');
+let userManager = require('../../../websocket/managers/user');
 let expect = require('chai').expect;
 
 describe('UserManager', () => {

@@ -1,8 +1,8 @@
 'use strict';
-let tokenManager = require('../utils/tokenManager');
+let tokenManager = require('../../utils/tokenManager');
 let expect = require('chai').expect;
 
-describe('utils/tokenManager', () => {
+describe('tokenManager', () => {
   it('should encrypt and decrypt a message correctly', done => {
     let user = {
       roomId: 'a',

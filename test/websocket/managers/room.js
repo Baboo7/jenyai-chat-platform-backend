@@ -1,5 +1,5 @@
 'use strict';
-let roomManager = require('../websocket/managers/room');
+let roomManager = require('../../../websocket/managers/room');
 let expect = require('chai').expect;
 
 describe('roomManager', () => {

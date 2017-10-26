@@ -1,8 +1,8 @@
 'use strict';
-let roomsCtrl = require('../database/controllers/rooms');
+let roomsCtrl = require('../../../database/controllers/rooms');
 let expect = require('chai').expect;
 
-describe('database/controllers/rooms', () => {
+describe('rooms controller', () => {
 
   it('find > should find the room named TEST', (done) => {
     let testRoom = {

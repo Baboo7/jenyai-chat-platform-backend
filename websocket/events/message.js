@@ -1,6 +1,6 @@
 const controllers = require('../../database/controllers');
 const userManager = require('../managers/user');
-const parser = require('../message-parser');
+const parser = require('../messageParser').parser;
 let sockets = require('../sockets');
 
 /*  Transmits a message from one client to an other.
