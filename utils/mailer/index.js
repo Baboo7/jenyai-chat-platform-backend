@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const mailConfig = require('../configs/mail');
+const mailConfig = require('../../configs/mail');
 const mailTemplates = require('./mailTemplates');
 
 /*  Sends a mail built from a template to recipients.
