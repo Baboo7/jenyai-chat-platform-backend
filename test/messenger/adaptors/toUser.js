@@ -1,8 +1,8 @@
 'use strict';
 let expect = require('chai').expect;
-let adaptor = require('../../../messenger/adaptors').toUser;
+let adaptor = require('../../../messenger/adaptors').fromUserToUser;
 
-describe('Messenger toUser adaptor', () => {
+describe('Messenger fromUserToUser adaptor', () => {
 
   it('should return a valid object', () => {
     // Params

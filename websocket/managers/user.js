@@ -26,7 +26,7 @@ const connectToUnderloadedTeacher = (sockets, user) => {
   conversationsCtrl.retrieveMessagesById(user.socket.id, conversation => {
     let messages = [];
     conversation.forEach( obj => {
-      messages.push(adaptors.toUser(JSON.parse(obj.message), teacher));
+      messages.push(adaptors.fromUserToUser(JSON.parse(obj.message), teacher));
     });
 
     let msg = {
@@ -146,7 +146,7 @@ const isStudent = user => {
 */
 const isTeacher = user => {
   if (!user) return false;
-  
+
   return user.type === 'teacher';
 };
 

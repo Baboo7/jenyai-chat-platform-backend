@@ -22,8 +22,8 @@ const messenger = (sockets, user, data, recipient) => {
   let msg = parsers.platform.parser(data, user);
   if (msg === null) { return null; }
 
-  user.socket.emit('message', adaptors.toUser(msg, user));
-  if (recipient !== null) { recipient.socket.emit('message', adaptors.toUser(msg, recipient)); }
+  user.socket.emit('message', adaptors.fromUserToUser(msg, user));
+  if (recipient !== null) { recipient.socket.emit('message', adaptors.fromUserToUser(msg, recipient)); }
 
   user.timestamp = msg.timestamp;
 

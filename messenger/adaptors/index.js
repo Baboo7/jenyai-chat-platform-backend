@@ -1,5 +1,5 @@
-const toUser = require('./toUser');
+const fromUserToUser = require('./fromUserToUser');
 
 module.exports = {
-  toUser
+  fromUserToUser
 };

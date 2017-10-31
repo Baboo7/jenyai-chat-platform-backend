@@ -7,7 +7,7 @@
     RETURN
       (object): message adapted to the user
 */
-const toUser = (message, user) => {
+const fromUserToUser = (message, user) => {
   let msg = Object.assign({}, message);
 
   msg = Object.assign(msg, message.message);
@@ -18,4 +18,4 @@ const toUser = (message, user) => {
   return msg;
 };
 
-module.exports = toUser;
+module.exports = fromUserToUser;
