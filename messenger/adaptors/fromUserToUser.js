@@ -10,10 +10,7 @@
 const fromUserToUser = (message, user) => {
   let msg = Object.assign({}, message);
 
-  msg = Object.assign(msg, message.message);
   msg.align = message.emitter === user.socket.id ? 'right' : 'left';
-
-  delete msg.message;
 
   return msg;
 };
