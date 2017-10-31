@@ -1,4 +1,5 @@
 const conversationsCtrl = require('../../database/controllers/conversations');
+const adaptors = require('../../messenger/adaptors');
 
 /*  Connects a student to the teacher in charge of the least number of students.
 
@@ -25,7 +26,7 @@ const connectToUnderloadedTeacher = (sockets, user) => {
   conversationsCtrl.retrieveMessagesById(user.socket.id, conversation => {
     let messages = [];
     conversation.forEach( obj => {
-      messages.push(JSON.parse(obj.message));
+      messages.push(adaptors.toUser(JSON.parse(obj.message), teacher));
     });
 
     let msg = {
@@ -130,6 +131,8 @@ const getUnderloadedTeacherId = (sockets, room) => {
       (boolean): true if student, false otherwise
 */
 const isStudent = user => {
+  if (!user) return false;
+
   return user.type === 'student';
 };
 
@@ -142,6 +145,8 @@ const isStudent = user => {
       (boolean): true if teacher, false otherwise
 */
 const isTeacher = user => {
+  if (!user) return false;
+  
   return user.type === 'teacher';
 };
 

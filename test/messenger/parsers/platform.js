@@ -1,8 +1,8 @@
 'use strict';
 let expect = require('chai').expect;
-let messageParser = require('../../websocket/messageParser');
+let messageParser = require('../../../messenger/parsers').platform;
 
-describe('MessageParser', () => {
+describe('Messenger platform parser', () => {
 
   describe('isVimeoVideo', () => {
     it('should detect a valid url video', () => {
@@ -259,7 +259,7 @@ describe('MessageParser', () => {
         timestamp: toTest.timestamp,
         message: {
           type: 'text',
-          payload: data.payload
+          text: data.payload
         }
       };
 
@@ -280,10 +280,7 @@ describe('MessageParser', () => {
         timestamp: toTest.timestamp,
         message: {
           type: 'video',
-          payload: {
-            platform: 'vimeo',
-            id
-          }
+          url: `https://player.vimeo.com/video/${id}`
         }
       };
 
@@ -304,10 +301,7 @@ describe('MessageParser', () => {
         timestamp: toTest.timestamp,
         message: {
           type: 'video',
-          payload: {
-            platform: 'vimeo',
-            id
-          }
+          url: `https://player.vimeo.com/video/${id}`
         }
       };
 
@@ -330,12 +324,7 @@ describe('MessageParser', () => {
         timestamp: toTest.timestamp,
         message: {
           type: 'video',
-          payload: {
-            platform: 'ytb',
-            id: id,
-            start: start,
-            end: end
-          }
+          url: `https://www.youtube.com/embed/${id}?`
         }
       };
 
@@ -358,12 +347,7 @@ describe('MessageParser', () => {
         timestamp: toTest.timestamp,
         message: {
           type: 'video',
-          payload: {
-            platform: 'ytb',
-            id: id,
-            start: start,
-            end: end
-          }
+          url: `https://www.youtube.com/embed/${id}?&start=${start}&end=${end}`
         }
       };
 

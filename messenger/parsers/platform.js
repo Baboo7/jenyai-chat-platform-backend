@@ -132,26 +132,20 @@ const parser = (data, user) => {
 
     let params = extractVimeoVideoParameters(data.payload);
 
-    msg.payload = {
-      platform: 'vimeo',
-      id: params.id
-    };
+    msg.url = `https://player.vimeo.com/video/${params.id}`;
   } else if (isYoutubeVideo(data.payload)) {
     msg.type = 'video';
 
     let params = extractYoutubeVideoParameters(data.payload);
 
-    msg.payload = {
-      platform: 'ytb',
-      id: params.id,
-      start: params.start,
-      end: params.end
-    };
+    msg.url = `https://www.youtube.com/embed/${params.id}?`;
+    if (params.start) msg.url += `&start=${params.start}`;
+    if (params.end) msg.url += `&end=${params.end}`;
   }
   // Text
   else {
     msg.type = 'text';
-    msg.payload = data.payload;
+    msg.text = data.payload;
   }
 
   metamsg.message = msg;
