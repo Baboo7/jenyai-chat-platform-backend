@@ -33,7 +33,7 @@ const connectToUnderloadedTeacher = (sockets, user) => {
 
   // Connect student to teacher
   user.recipient = teacherId;
-  // user.discussWithAgent = false;
+  user.discussWithAgent = false;
 
   teacher.load++;
 
