@@ -4,14 +4,24 @@ const connectStudent = require('./connectStudent');
 const connectTeacher = require('./connectTeacher');
 const create = require('./create');
 const deleteRoom = require('./delete');
-const getRoom = require('./get');
-const getAll = require('./getAll');
+const getAllDetails = require('./getAllDetails');
+const getAllName = require('./getAllName');
+const getOneDetails = require('./getOneDetails');
+
+/**** GET ****/
+
+router.get('/', getAllName);
+
+router.get('/details', getAllDetails);
+router.get('/details/:name', getOneDetails);
+
+/**** POST ****/
+
+router.post('/create', create);
+
+router.post('/delete', deleteRoom);
 
 router.post('/connect/student', connectStudent);
 router.post('/connect/teacher', connectTeacher);
-router.post('/create', create);
-router.post('/delete', deleteRoom);
-router.get('/get/:name', getRoom);
-router.get('/get', getAll);
 
 module.exports = router;

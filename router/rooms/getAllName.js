@@ -11,11 +11,17 @@ const roomsCtrl = require('../../database/controllers/rooms');
     RETURN
       none
 */
-const getAll = (req, res) => {
+const getAllName = (req, res) => {
   // Retrieve room information from database
-  roomsCtrl.findAll(rooms => {
-    return res.status(200).json(rooms);
+  roomsCtrl.findAllName(rooms => {
+
+    let msg = {
+      success: true,
+      rooms: rooms
+    };
+
+    return res.status(200).json(msg);
   });
 };
 
-module.exports = getAll;
+module.exports = getAllName;

@@ -1,7 +1,7 @@
 'use strict';
 const roomsCtrl = require('../../database/controllers/rooms');
 
-/*  Gets a room from the database.
+/*  Get a room from the database.
 
     PARAMS
       req (object): request object. Must contains the following properties in its params property
@@ -11,7 +11,7 @@ const roomsCtrl = require('../../database/controllers/rooms');
     RETURN
       none
 */
-const getRoom = (req, res) => {
+const getOne = (req, res) => {
   // Check parameters presence
   let name = req.params.name;
   if (!name) { return res.status(200).json({ success: false }); }
@@ -25,4 +25,4 @@ const getRoom = (req, res) => {
   });
 };
 
-module.exports = getRoom;
+module.exports = getOne;

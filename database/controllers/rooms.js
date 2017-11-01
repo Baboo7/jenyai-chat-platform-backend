@@ -62,6 +62,34 @@ const findAll = (callback) => {
   .catch(err => console.error(err))
 };
 
+/*  Fetches all rooms' name from database.
+
+    PARAMS
+      callback (function): function called in case of success. Take one argument:
+        (array of string): rooms's name
+
+    RETURN
+      none
+*/
+const findAllName = (callback) => {
+  return rooms
+  .findAll({
+    attributes: [ 'name' ],
+    order: [ [ 'name', 'ASC' ] ],
+    raw: true
+  })
+  .then(data => {
+    let roomsName = [ ];
+
+    Object.keys(data).forEach(key => {
+      roomsName.push(data[key].name);
+    });
+
+    callback(roomsName);
+  })
+  .catch(err => console.error(err))
+};
+
 /*  Fetches a room by its name and password in the rooms database.
 
     PARAMS
@@ -108,5 +136,6 @@ module.exports = {
   delete: deleteRoom,
   find,
   findAll,
+  findAllName,
   findPassword
 };

@@ -4,6 +4,22 @@ const fs = require('fs');
 const config = require('../../configs/config');
 const conversationsCtrl = require('../../database/controllers/conversations');
 
+/*  Compute a csv line.
+
+    PARAMS
+      properties (array of strings): set of strings to concat
+
+    RETURN
+      (string) computed line
+*/
+const createCSVLine = properties => {
+  let line = '"';
+  line += properties.join('","');
+  line += '"\n';
+
+  return line
+};
+
 /*  Gets all conversations from the database.
 
     PARAMS
@@ -23,28 +39,42 @@ const getAll = (req, res) => {
 
     // Retrieve conversations from database
     conversationsCtrl.retrieveAll(conversations => {
-      fs.writeSync(fd, 'conversation id, issuance date, message, room, emitter id, emitter type, emitter name, recipient id, recipient type, recipient name\n');
+      let header = [
+        'conversation id',
+        'issuance date',
+        'message',
+        'room',
+        'emitter id',
+        'emitter type',
+        'emitter name',
+        'recipient id',
+        'recipient type',
+        'recipient name'
+      ];
+
+      fs.writeSync(fd, createCSVLine(header));
 
       conversations.forEach(c => {
         let msg = JSON.parse(c.message);
 
-        let line = '';
+        let text = ' ';
+        if (msg.message.type === 'text') { text = msg.message.text; }
+        else if (msg.message.type === 'video') { text = msg.message.url; }
 
-        line += c.uuid;
-        line += ',' + c.timestamp;
-        if (msg.message.type === 'text') { line += `,"${msg.message.text}"`; }
-        else if (msg.message.type === 'video') { line += `,"${msg.message.url}"`; }
-        else { line += ','; }
-        line += ',' + msg.room;
-        line += ',' + msg.emitter;
-        line += ',' + msg.emitterType;
-        line += ',' + msg.emitterName;
-        line += ',' + msg.recipient;
-        line += ',' + msg.recipientType;
-        line += ',' + msg.recipientName;
+        let lineProperties = [
+          c.uuid,
+          c.timestamp,
+          text,
+          msg.room,
+          msg.emitter,
+          msg.emitterType,
+          msg.emitterName,
+          msg.recipient,
+          msg.recipientType,
+          msg.recipientName,
+        ];
 
-        line += '\n';
-        fs.writeSync(fd, line);
+        fs.writeSync(fd, createCSVLine(lineProperties));
       });
 
       fs.close(fd, err => {
