@@ -32,7 +32,8 @@ const getAll = (req, res) => {
 
         line += c.uuid;
         line += ',' + c.timestamp;
-        if (msg.message.type === 'text') { line += `,"${msg.message.payload}"`; }
+        if (msg.message.type === 'text') { line += `,"${msg.message.text}"`; }
+        else if (msg.message.type === 'video') { line += `,"${msg.message.url}"`; }
         else { line += ','; }
         line += ',' + msg.room;
         line += ',' + msg.emitter;
