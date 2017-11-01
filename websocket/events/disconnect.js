@@ -19,13 +19,16 @@ const disconnect = (socketId) => {
     let teacherEmitter = userManager.getEmitter(sockets, user.recipient);
     if (teacherEmitter !== null) {
       teacherEmitter.load--;
-      teacherEmitter.socket.emit('del-student', { student: user.socket.id });
+
+      let msg = { student: user.socket.id };
+
+      teacherEmitter.socket.emit('del-student', msg);
     }
   } else if (userManager.isTeacher(user)) {
     Object.keys(sockets).forEach(id => {
       let u = userManager.getEmitter(sockets, id);
-      if (u.room === user.room && userManager.isStudent(u) && u.recipient && u.recipient === user.socket.id) {
-        userManager.connectToUnderloadedTeacher(sockets, u.socket.id);
+      if (userManager.inSameRoom(u, user) && userManager.isStudent(u) && u.recipient && u.recipient === user.socket.id) {
+        userManager.connectToUnderloadedTeacher(sockets, u);
       }
     });
   }
