@@ -39,5 +39,5 @@ const sendMessage = (query, sessionId, callback) => {
 }
 
 module.exports = {
-  sendMessage
+  sendMessage: sendMessage
 };

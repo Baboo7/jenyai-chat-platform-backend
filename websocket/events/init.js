@@ -19,18 +19,26 @@ const init = (socket, decryptedToken) => {
   roomManager.doesExistInDb(decryptedToken.rnm, room => {
     if (room === null) { return; }
 
-    sockets[socket.id] = {
-      name: decryptedToken.unm,
-      type: decryptedToken.utp,
-      room: decryptedToken.rnm,
-      socket: socket
-    };
-    let user = sockets[socket.id];
+    let user = userManager.createUser(
+      decryptedToken.utp, // type
+      decryptedToken.rnm, // room
+      null,               // recipient
+      decryptedToken.unm, // name
+      socket              // socket
+    );
+    if (user === null) return;
+
+    sockets[socket.id] = user;
     socket.emit('init', { id: socket.id });
+
     let nbTeachers = roomManager.countTeachers(sockets, user.room);
     if (userManager.isStudent(user)) {
       if (nbTeachers === 0) {
 
+        // Activate agent for student
+        user.discussWithAgent = true;
+
+        // Warn teachers a student needs help
         let mailData = {
           roomName: user.room ,
           studentName: user.name
@@ -41,12 +49,10 @@ const init = (socket, decryptedToken) => {
         userManager.connectToUnderloadedTeacher(sockets, user);
       }
     } else if (userManager.isTeacher(user)) {
-      user.load = 0;
-
       if (nbTeachers === 1) {
         Object.keys(sockets).forEach(socketId => {
           let u = userManager.getEmitter(sockets, socketId);
-          if (u.room === user.room && userManager.isStudent(u)) {
+          if (userManager.inSameRoom(u, user) && userManager.isStudent(u)) {
             userManager.connectToUnderloadedTeacher(sockets, u);
           }
         });

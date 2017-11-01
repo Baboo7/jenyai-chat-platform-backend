@@ -46,6 +46,82 @@ describe('UserManager', () => {
     });
   });
 
+  describe('createAgent', () => {
+    it('should create a user agent', () => {
+      let room = 'room';
+      let recipient = 'recipient';
+
+      let expected = {
+        name: 'JenyAI',
+        type: 'agent',
+        room: room,
+        recipient: recipient
+      };
+
+      expect(userManager.createAgent(room, recipient)).to.deep.equal(expected);
+    });
+  });
+
+  describe('isAgent', () => {
+    it('should detect a user agent', () => {
+      let user = {
+        type: 'agent'
+      };
+
+      let expected = true;
+
+      expect(userManager.isAgent(user)).to.equal(expected);
+    });
+
+    it('should not detect a user agent', () => {
+      let user = {
+        type: 'not an agent'
+      };
+
+      let expected = false;
+
+      expect(userManager.isAgent(user)).to.equal(expected);
+    });
+
+    it('should not detect a user agent 2', () => {
+      let user = undefined;
+
+      let expected = false;
+
+      expect(userManager.isAgent(user)).to.equal(expected);
+    });
+  });
+
+  describe('isHuman', () => {
+    it('should detect a user human', () => {
+      let user = {
+        type: 'student'
+      };
+
+      let expected = true;
+
+      expect(userManager.isHuman(user)).to.equal(expected);
+    });
+
+    it('should not detect a user human', () => {
+      let user = {
+        type: 'not a human'
+      };
+
+      let expected = false;
+
+      expect(userManager.isHuman(user)).to.equal(expected);
+    });
+
+    it('should not detect a user human 2', () => {
+      let user = undefined;
+
+      let expected = false;
+
+      expect(userManager.isHuman(user)).to.equal(expected);
+    });
+  });
+
   it('getUnderloadedTeacherId > should return the if of the most underloaded teacher', () => {
     let sockets = {
       0: { type: 'teacher', load: 15, room: 'test', socket: { id: 0 } },

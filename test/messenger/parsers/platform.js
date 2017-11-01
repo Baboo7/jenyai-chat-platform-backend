@@ -1,6 +1,6 @@
 'use strict';
 let expect = require('chai').expect;
-let messageParser = require('../../../messenger/parsers').platform;
+let messageParser = require('../../../messenger/parser/platform');
 
 describe('Messenger platform parser', () => {
 

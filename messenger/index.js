@@ -2,8 +2,9 @@
 
 const controllers = require('../database/controllers');
 const userManager = require('../websocket/managers/user');
-const parsers = require('./parsers');
+const parser = require('./parser');
 const adaptors = require('./adaptors');
+const senders = require('./senders');
 
 /*  Send a message from an emitter to a recipient.
 
@@ -18,34 +19,57 @@ const adaptors = require('./adaptors');
 */
 const sendMessage = (sockets, user, data, recipient) => {
 
-  // Triggers
-
-  if (userManager.isTeacher(user) && recipient === null) { return; }
-
   // Parsing
 
-  let msg = parsers.platform.parser(data, user);
-  if (msg === null) { return; }
+  let messages =  parser(data, user, recipient);
+  if (messages.length === 0) { return; }
 
   // Sending
 
-  user.socket.emit('message', adaptors.fromUserToUser(msg, user));
-  if (recipient !== null) { recipient.socket.emit('message', adaptors.fromUserToUser(msg, recipient)); }
+  if (userManager.isStudent(user)
+    || userManager.isTeacher(user) && userManager.isStudent(recipient)) {
+    messages.forEach(msg => {
+      user.socket.emit('message', adaptors.fromUserToUser(msg, user));
+      if (recipient) {
+        recipient.socket.emit('message', adaptors.fromUserToUser(msg, recipient));
+      }
+    });
+  } else if (userManager.isAgent(user)) {
+    let teacher = userManager.getEmitter(sockets, recipient.recipient);
+    messages.forEach(msg => {
+      recipient.socket.emit('message', adaptors.fromUserToUser(msg, recipient));
+      if (teacher !== null) teacher.socket.emit('message', adaptors.fromUserToUser(msg, teacher));
+    });
+  }
 
-  user.timestamp = msg.timestamp;
+  if (userManager.isStudent(user)) {
+    if (user.discussWithAgent) {
+      messages.forEach(msg => {
+        senders.dialogFlow.sendMessage(msg.message.text, user.socket.id, agentResponse => {
+          let agentUser = userManager.createAgent(user.room, user.socket.id);
+          sendMessage(sockets, agentUser, agentResponse, user);
+        });
+      });
+    }
+  }
+
+  user.timestamp = messages[messages.length - 1].timestamp;
 
   // Storing
 
-  let studentUuid = userManager.isStudent(user) ? user.socket.id : user.recipient;
+  if (userManager.isStudent(user) || userManager.isStudent(recipient)) {
+    let studentUuid = userManager.isStudent(user) ? user.socket.id : user.recipient;
 
-  msg.emitterName = user.name;
-  msg.room = user.room;
-  if (recipient !== null) {
-    msg.recipientType = recipient.type;
-    msg.recipientName = recipient.name;
+    messages.forEach(msg => {
+      msg.emitterName = user.name;
+      msg.room = user.room;
+      if (recipient !== null) {
+        msg.recipientType = recipient.type;
+        msg.recipientName = recipient.name;
+      }
+      controllers.conversations.addMessage(studentUuid, user.timestamp, msg);
+    });
   }
-
-  controllers.conversations.addMessage(studentUuid, user.timestamp, msg);
 };
 
 module.exports = {
