@@ -1,5 +1,7 @@
 'use strict';
 
+const utils = require('./utils');
+
 /*  Parse a message comming from a dialogflow agent.
 
     PARAMS
@@ -24,14 +26,11 @@ const parser = (raw, recipient) => {
     switch (msg.type) {
       case 0: // text message
         parsedMsg.push({
-          emitter: '-1',
+          emitter: 'dialogflow',
           emitterType: 'agent',
           recipient: recipient.socket.id,
           timestamp: new Date(),
-          message: {
-            type: 'text',
-            text: msg.speech
-          }
+          message: utils.parseText(msg.speech)
         });
       break;
     }
