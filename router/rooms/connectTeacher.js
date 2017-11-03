@@ -48,9 +48,9 @@ const connectTeacher = (req, res) => {
     }
 
     let user = {
-      unm: userName,
-      utp: 'teacher',
-      rnm: room.name
+      userName: userName,
+      userType: 'teacher',
+      roomName: room.name
     };
 
     tokenManager.generateToken(user, token => {

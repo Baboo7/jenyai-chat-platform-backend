@@ -7,24 +7,21 @@ let sockets = require('../sockets');
 
     PARAMS
       socket (object): socket freshly created
-      decryptedToken (object): object from the decrypted token. It must contain
-        unm (string): user name
-        utp (string): user type, either 'student' or 'teacher'
-        rnm (string): room name
+      decryptedToken (Token Object): object from the decrypted token. See crypto module for information on Token Object structure
 
     RETURN
       none
 */
 const init = (socket, decryptedToken) => {
-  roomManager.doesExistInDb(decryptedToken.rnm, room => {
+  roomManager.doesExistInDb(decryptedToken.roomName, room => {
     if (room === null) { return; }
 
     let user = userManager.createUser(
-      decryptedToken.utp, // type
-      decryptedToken.rnm, // room
-      null,               // recipient
-      decryptedToken.unm, // name
-      socket              // socket
+      decryptedToken.userType,  // type
+      decryptedToken.roomName,  // room
+      null,                     // recipient
+      decryptedToken.userName,  // name
+      socket                    // socket
     );
     if (user === null) return;
 

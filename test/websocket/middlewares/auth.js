@@ -6,14 +6,14 @@ let expect = require('chai').expect;
 describe('authMW', () => {
   it('should validate authentication', done => {
     let user = {
-      roomId: 'a',
-      type: 'b',
-      id: 'c'
+      userName: 'a',
+      userType: 'b',
+      roomName: 'c'
     };
 
     tokenManager.generateToken(user, token => {
-      authMW(token, decryptedUser => {
-        expect(decryptedUser).to.include(user);
+      authMW(token, decrypted => {
+        expect(decrypted).to.deep.equal(user);
         done();
       });
     });
@@ -22,8 +22,12 @@ describe('authMW', () => {
   it('should not validate authentication', done => {
     let token = 'token';
 
-    authMW(token, undefined, () => {
-      expect(1).to.equal(1);
+    authMW(token, decrypted => {
+      expect(true).to.equal(false);
+      done();
+    },
+    () => {
+      expect(true).to.equal(true);
       done();
     });
   });
