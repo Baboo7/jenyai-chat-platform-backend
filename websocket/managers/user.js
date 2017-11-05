@@ -39,20 +39,20 @@ const connectToUnderloadedTeacher = (sockets, user) => {
 
   // Send previous messages to teacher
   conversationsCtrl.retrieveMessagesById(user.socket.id, conversation => {
-    let messages = [];
+    let messages = [ ];
     conversation.forEach( obj => {
-      messages.push(adaptors.fromUserToUser(JSON.parse(obj.message), teacher));
+      messages.push(JSON.parse(obj.message));
     });
 
-    let msg = {
+    let socketMsg = {
       student: {
         id: user.socket.id,
         name: user.name
       },
-      messages: messages
+      messages: adaptors.fromUserToUser(messages, teacher)
     };
 
-    teacher.socket.emit('new-student', msg);
+    teacher.socket.emit('new-student', socketMsg);
   });
 };
 

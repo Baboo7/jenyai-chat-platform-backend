@@ -28,18 +28,14 @@ const sendMessage = (sockets, user, data, recipient) => {
 
   if (userManager.isStudent(user)
     || userManager.isTeacher(user) && userManager.isStudent(recipient)) {
-    messages.forEach(msg => {
-      user.socket.emit('message', adaptors.fromUserToUser(msg, user));
-      if (recipient) {
-        recipient.socket.emit('message', adaptors.fromUserToUser(msg, recipient));
-      }
-    });
+    user.socket.emit('message', adaptors.fromUserToUser(messages, user));
+    if (recipient) {
+      recipient.socket.emit('message', adaptors.fromUserToUser(messages, recipient));
+    }
   } else if (userManager.isAgent(user)) {
     let teacher = userManager.getEmitter(sockets, recipient.recipient);
-    messages.forEach(msg => {
-      recipient.socket.emit('message', adaptors.fromUserToUser(msg, recipient));
-      if (teacher !== null) teacher.socket.emit('message', adaptors.fromUserToUser(msg, teacher));
-    });
+    recipient.socket.emit('message', adaptors.fromUserToUser(messages, recipient));
+    if (teacher !== null) teacher.socket.emit('message', adaptors.fromUserToUser(messages, teacher));
   }
 
   if (userManager.isStudent(user)) {

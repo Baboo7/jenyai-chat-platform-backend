@@ -10,26 +10,26 @@ describe('Messenger fromUserToUser adaptor', () => {
     let receiverType = 'student';
     let align = 'left';
 
-    let message = {
+    let message = [{
       emitterType: emitterType,
       message: {
         type: 'text',
         text: 'what is meaning of life?'
       }
-    };
+    }];
 
     let user = {
       type: receiverType
     };
 
-    let expected = {
+    let expected = [{
       align: align,
       emitterType: emitterType,
       message: {
         type: 'text',
         text: 'what is meaning of life?'
       }
-    };
+    }];
 
     expect(adaptor(message, user)).to.deep.equal(expected);
   });
@@ -40,26 +40,26 @@ describe('Messenger fromUserToUser adaptor', () => {
     let receiverType = 'student';
     let align = 'left';
 
-    let message = {
+    let message = [{
       emitterType: emitterType,
       message: {
         type: 'text',
         text: 'what is meaning of life?'
       }
-    };
+    }];
 
     let user = {
       type: receiverType
     };
 
-    let expected = {
+    let expected = [{
       align: align,
       emitterType: emitterType,
       message: {
         type: 'text',
         text: 'what is meaning of life?'
       }
-    };
+    }];
 
     expect(adaptor(message, user)).to.deep.equal(expected);
   });
@@ -70,26 +70,26 @@ describe('Messenger fromUserToUser adaptor', () => {
     let receiverType = 'teacher';
     let align = 'right';
 
-    let message = {
+    let message = [{
       emitterType: emitterType,
       message: {
         type: 'text',
         text: 'what is meaning of life?'
       }
-    };
+    }];
 
     let user = {
       type: receiverType
     };
 
-    let expected = {
+    let expected = [{
       align: align,
       emitterType: emitterType,
       message: {
         type: 'text',
         text: 'what is meaning of life?'
       }
-    };
+    }];
 
     expect(adaptor(message, user)).to.deep.equal(expected);
   });
