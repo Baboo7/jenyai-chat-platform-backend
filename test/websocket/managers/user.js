@@ -5,7 +5,7 @@ let expect = require('chai').expect;
 describe('UserManager', () => {
 
   describe('getEmitter', () => {
-    it('getEmitter > should return the right emitter', () => {
+    it('should return the right emitter', () => {
       let expected = { type: 'teacher', load: 5, room: 'test', socket: { id: 2 } };
       let sockets = {
         0: { type: 'teacher', load: 15, room: 'test', socket: { id: 0 } },
@@ -17,7 +17,7 @@ describe('UserManager', () => {
       expect(userManager.getEmitter(sockets, expected.id)).to.equal(expected);
     });
 
-    it('getEmitter > should return null', () => {
+    it('should return null', () => {
       let sockets = {
         0: { type: 'teacher', load: 15, room: 'test', socket: { id: 0 } },
         3: { type: 'student', room: 'test', socket: { id: 3 } },
@@ -43,6 +43,66 @@ describe('UserManager', () => {
       userManager.deleteEmitter(sockets, 3);
 
       expect(sockets).to.deep.equal(expected);
+    });
+  });
+
+  describe('getStudentFromOverloadedTeacher', () => {
+    it('should return undefined', () => {
+      let sockets = {
+        0: { type: 'teacher', room: 'A', socket: { id: 0 }, load: 15 },
+        1: { type: 'teacher', room: 'A', socket: { id: 1 }, load: 10 },
+        2: { type: 'teacher', room: 'A', socket: { id: 2 }, load: 20 },
+        3: { type: 'teacher', room: 'B', socket: { id: 3 }, load: 30 },
+
+        4: { type: 'student', room: 'A', socket: { id: 4 } },
+        5: { type: 'student', room: 'A', socket: { id: 5 } },
+        6: { type: 'student', room: 'B', socket: { id: 6 } },
+        7: { type: 'student', room: 'B', socket: { id: 7 } }
+      };
+
+      let expected = undefined;
+
+      expect(userManager.getStudentFromOverloadedTeacher(sockets, undefined)).to.equal(expected);
+    });
+
+    it('should return a student', () => {
+      let sockets = {
+        0: { type: 'teacher', room: 'A', socket: { id: 0 }, recipient: 0, load: 0 },
+        1: { type: 'teacher', room: 'A', socket: { id: 1 }, recipient: 0, load: 0 },
+        2: { type: 'teacher', room: 'A', socket: { id: 2 }, recipient: 4, load: 2 },
+        3: { type: 'teacher', room: 'B', socket: { id: 3 }, recipient: 0, load: 2 },
+
+        4: { type: 'student', room: 'A', socket: { id: 4 }, recipient: 2 },
+        5: { type: 'student', room: 'A', socket: { id: 5 }, recipient: 2 },
+        6: { type: 'student', room: 'B', socket: { id: 6 }, recipient: 3 },
+        7: { type: 'student', room: 'B', socket: { id: 7 }, recipient: 3 }
+      };
+
+      let expected = { type: 'student', room: 'A', socket: { id: 5 }, recipient: 2 };
+
+      expect(userManager.getStudentFromOverloadedTeacher(sockets, 'A')).to.deep.equal(expected);
+    });
+  });
+
+  describe('getOverloadedTeacherId', () => {
+    it('should get the id of the most overloaded teacher', () => {
+      let sockets = {
+        0: { type: 'teacher', load: 15, room: 'test', socket: { id: 0 } },
+        1: { type: 'teacher', load: 10, room: 'test', socket: { id: 1 } },
+        3: { type: 'teacher', load: 20, room: 'test', socket: { id: 3 } },
+      };
+
+      expect(userManager.getOverloadedTeacherId(sockets, 'test')).to.equal(3);
+    });
+
+    it('should get the id of the first most overloaded teacher', () => {
+      let sockets = {
+        0: { type: 'teacher', load: 20, room: 'test', socket: { id: 0 } },
+        1: { type: 'teacher', load: 10, room: 'test', socket: { id: 1 } },
+        3: { type: 'teacher', load: 20, room: 'test', socket: { id: 3 } },
+      };
+
+      expect(userManager.getOverloadedTeacherId(sockets, 'test')).to.equal(0);
     });
   });
 
@@ -119,6 +179,26 @@ describe('UserManager', () => {
       let expected = false;
 
       expect(userManager.isHuman(user)).to.equal(expected);
+    });
+  });
+
+  describe('isInRoom', () => {
+    it('should say the user is in the specified room', () => {
+      let room = 'room';
+      let user = { room: 'room' };
+
+      let expected = true;
+
+      expect(userManager.isInRoom(user, room)).to.equal(expected);
+    });
+
+    it('should say the user is not in the specified room', () => {
+      let room = 'roomA';
+      let user = { room: 'roomB' };
+
+      let expected = false;
+
+      expect(userManager.isInRoom(user, room)).to.equal(expected);
     });
   });
 

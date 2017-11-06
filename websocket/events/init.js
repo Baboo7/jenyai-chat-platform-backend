@@ -30,10 +30,9 @@ const init = (socket, decryptedToken) => {
 
     let nbTeachers = roomManager.countTeachers(sockets, user.room);
     if (userManager.isStudent(user)) {
-      if (nbTeachers === 0) {
+      userManager.connectToUnderloadedTeacher(sockets, user);
 
-        // Activate agent for student
-        user.discussWithAgent = true;
+      if (nbTeachers === 0) {
 
         // Warn teachers a student needs help
         let mailData = {
@@ -42,8 +41,6 @@ const init = (socket, decryptedToken) => {
         };
 
         mailer.sendMail(room.teachers, 'new-student', mailData);
-      } else {
-        userManager.connectToUnderloadedTeacher(sockets, user);
       }
     } else if (userManager.isTeacher(user)) {
       if (nbTeachers === 1) {
@@ -53,6 +50,11 @@ const init = (socket, decryptedToken) => {
             userManager.connectToUnderloadedTeacher(sockets, u);
           }
         });
+      }
+
+      // Balance student load over all teachers
+      else {
+        roomManager.balanceLoad(sockets, user.room);
       }
     }
   });

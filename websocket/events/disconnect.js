@@ -16,14 +16,7 @@ const disconnect = (socketId) => {
   userManager.deleteEmitter(sockets, user.socket.id);
 
   if (userManager.isStudent(user)) {
-    let teacherEmitter = userManager.getEmitter(sockets, user.recipient);
-    if (teacherEmitter !== null) {
-      teacherEmitter.load--;
-
-      let msg = { student: user.socket.id };
-
-      teacherEmitter.socket.emit('del-student', msg);
-    }
+    userManager.disconnectStudent(sockets, user);
   } else if (userManager.isTeacher(user)) {
     Object.keys(sockets).forEach(id => {
       let u = userManager.getEmitter(sockets, id);

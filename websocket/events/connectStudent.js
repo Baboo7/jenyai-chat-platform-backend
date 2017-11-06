@@ -15,16 +15,19 @@ const connectStudent = (data, socketId) => {
   let user = userManager.getEmitter(sockets, socketId);
   if (user === null) { return; }
 
+  // Only teachers can emit this event
   if (!userManager.isTeacher(user)) { return; }
 
+  // Get the student to connect to
   let studentId = data.id;
   let student = userManager.getEmitter(sockets, studentId);
   if (student === null) { return; }
 
+  // Check that the student is associated to the teacher firing the event
   if (student.recipient && student.recipient !== user.socket.id) { return; }
 
+  // Set the student as the new recipient
   user.recipient = studentId;
-  student.recipient = user.socket.id;
 
   let msg = { id: studentId };
 
