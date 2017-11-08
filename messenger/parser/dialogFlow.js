@@ -32,7 +32,27 @@ const parser = (raw, recipient) => {
           timestamp: new Date(),
           message: utils.parseText(msg.speech)
         });
-      break;
+
+        break;
+
+      case 4: // custom payload
+
+        let metamsg = {
+          emitter: 'dialogflow',
+          emitterType: 'agent',
+          recipient: recipient.socket.id,
+          timestamp: new Date()
+        };
+
+        let payload = msg.payload;
+
+        if (payload.type === 'image'
+          && payload.src) {
+          metamsg.message = payload;
+          parsedMsg.push(metamsg);
+        }
+
+        break;
     }
   });
 

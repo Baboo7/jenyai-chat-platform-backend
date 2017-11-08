@@ -60,6 +60,7 @@ const getAll = (req, res) => {
         let text = ' ';
         if (msg.message.type === 'text') { text = msg.message.text; }
         else if (msg.message.type === 'video') { text = msg.message.url; }
+        else if (msg.message.type === 'image') { text = msg.message.src; }
 
         let lineProperties = [
           c.uuid,
