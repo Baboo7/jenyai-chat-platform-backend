@@ -76,12 +76,13 @@ userManager.connectToUnderloadedTeacher = (sockets, user) => {
     let socketMsg = {
       student: {
         id: user.socket.id,
-        name: user.name
+        name: user.name,
+        discussWithAgent: user.discussWithAgent
       },
       messages: adaptors.fromUserToUser(messages, teacher)
     };
 
-    teacher.socket.emit('new-student', socketMsg);
+    teacher.socket.emit('student-connected', socketMsg);
   });
 };
 
@@ -101,7 +102,7 @@ userManager.disconnectStudent = (sockets, student) => {
 
     let msg = { student: student.socket.id };
 
-    teacher.socket.emit('del-student', msg);
+    teacher.socket.emit('student-disconnected', msg);
   }
 };
 

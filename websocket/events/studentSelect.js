@@ -11,7 +11,7 @@ let sockets = require('../sockets');
     RETURN
       none
 */
-const connectStudent = (data, socketId) => {
+const studentSelect = (data, socketId) => {
   let user = userManager.getEmitter(sockets, socketId);
   if (user === null) { return; }
 
@@ -31,7 +31,7 @@ const connectStudent = (data, socketId) => {
 
   let msg = { id: studentId };
 
-  user.socket.emit('connect-student', msg);
+  user.socket.emit('student-selected', msg);
 };
 
-module.exports = connectStudent;
+module.exports = studentSelect;

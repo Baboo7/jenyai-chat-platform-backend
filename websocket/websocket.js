@@ -18,7 +18,9 @@ const setUpWebsocket = server => {
         });
     });
 
-    socket.on('connect-student', data => eventHandler.connectStudent(data, socket.id));
+    socket.on('student-select', data => eventHandler.studentSelect(data, socket.id));
+
+    socket.on('student-switch', data => eventHandler.studentSwitch(data, socket.id));
 
     socket.on('message', data => eventHandler.message(data, socket.id));
 
