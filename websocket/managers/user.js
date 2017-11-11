@@ -62,7 +62,6 @@ userManager.connectToUnderloadedTeacher = (sockets, user) => {
 
   // Connect student to teacher
   user.recipient = teacherId;
-  user.discussWithAgent = false;
 
   teacher.load++;
 
@@ -244,7 +243,7 @@ userManager.createStudent = (room, recipient, name, socket) => {
     room: room,
     socket: socket,
     recipient: recipient,
-    discussWithAgent: false
+    discussWithAgent: true
   };
 };
 
