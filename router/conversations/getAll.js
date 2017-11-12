@@ -13,7 +13,18 @@ const conversationsCtrl = require('../../database/controllers/conversations');
       (string) computed line
 */
 const createCSVLine = properties => {
+
   let line = '"';
+  for (let p = 0 ; p < properties.length ; p++) {
+
+    let property = properties[p];
+
+    if (!property) property = ' ';
+
+    property = property.replace(/"/g, '""');
+    properties[p] = property;
+  }
+
   line += properties.join('","');
   line += '"\n';
 
@@ -49,7 +60,8 @@ const getAll = (req, res) => {
         'emitter name',
         'recipient id',
         'recipient type',
-        'recipient name'
+        'recipient name',
+        'media'
       ];
 
       fs.writeSync(fd, createCSVLine(header));
@@ -64,7 +76,7 @@ const getAll = (req, res) => {
 
         let lineProperties = [
           c.uuid,
-          c.timestamp,
+          c.timestamp.toString(),
           text,
           msg.room,
           msg.emitter,
@@ -73,6 +85,7 @@ const getAll = (req, res) => {
           msg.recipient,
           msg.recipientType,
           msg.recipientName,
+          msg.message.media
         ];
 
         fs.writeSync(fd, createCSVLine(lineProperties));
