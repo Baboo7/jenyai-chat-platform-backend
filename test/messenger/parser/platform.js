@@ -30,7 +30,13 @@ describe('Messenger platform parser', () => {
   });
 
   it('should return null from empty payload', () => {
-    let data = { payload: '' };
+    let data = {
+      type: 'text',
+      payload: {
+        text: '',
+        media: 'typed'
+      }
+    };
     let user = { userId: 1, roomId: 'AAAAAA', type: 'teacher' };
     let emitter = { recipient: 2 };
 
@@ -42,7 +48,13 @@ describe('Messenger platform parser', () => {
   });
 
   it('should return null from blank payload', () => {
-    let data = { payload: '    ' };
+    let data = {
+      type: 'text',
+      payload: {
+        text: '    ',
+        media: 'typed'
+      }
+    };
     let user = { userId: 1, roomId: 'AAAAAA', type: 'teacher' };
     let emitter = { recipient: 2 };
 
@@ -54,7 +66,13 @@ describe('Messenger platform parser', () => {
   });
 
   it('should return a text message object', () => {
-    let data = { payload: 'some text' };
+    let data = {
+      type: 'text',
+      payload: {
+        text: 'some text',
+        media: 'typed'
+      }
+    };
     let user = { room: 'AAAAAA', type: 'teacher', recipient: 2, socket: { id: 1 } };
 
     let toTest = messageParser.parser(data, user);
@@ -66,7 +84,8 @@ describe('Messenger platform parser', () => {
       timestamp: toTest.timestamp,
       message: {
         type: 'text',
-        text: data.payload
+        text: data.payload.text,
+        media: data.payload.media
       }
     };
 
@@ -75,7 +94,13 @@ describe('Messenger platform parser', () => {
 
   it('should return a video vimeo message object', () => {
     let id = '227718208';
-    let data = { payload: `https://vimeo.com/${id}` };
+    let data = {
+      type: 'text',
+      payload: {
+        text: `https://vimeo.com/${id}`,
+        media: 'typed'
+      }
+    };
     let user = { room: 'AAAAAA', type: 'teacher', recipient: 2, socket: { id: 1 } };
 
     let toTest = messageParser.parser(data, user);
@@ -87,7 +112,8 @@ describe('Messenger platform parser', () => {
       timestamp: toTest.timestamp,
       message: {
         type: 'video',
-        url: `https://player.vimeo.com/video/${id}`
+        url: `https://player.vimeo.com/video/${id}`,
+        media: data.payload.media
       }
     };
 
@@ -96,7 +122,13 @@ describe('Messenger platform parser', () => {
 
   it('should return a video vimeo message object 2', () => {
     let id = '239756014';
-    let data = { payload: `https://vimeo.com/channels/staffpicks/${id}` };
+    let data = {
+      type: 'text',
+      payload: {
+        text: `https://vimeo.com/channels/staffpicks/${id}`,
+        media: 'typed'
+      }
+    };
     let user = { room: 'AAAAAA', type: 'teacher', recipient: 2, socket: { id: 1 } };
 
     let toTest = messageParser.parser(data, user);
@@ -108,7 +140,8 @@ describe('Messenger platform parser', () => {
       timestamp: toTest.timestamp,
       message: {
         type: 'video',
-        url: `https://player.vimeo.com/video/${id}`
+        url: `https://player.vimeo.com/video/${id}`,
+        media: data.payload.media
       }
     };
 
@@ -119,7 +152,14 @@ describe('Messenger platform parser', () => {
     let id = 'UDmTxza0I6o';
     let start = null;
     let end = null;
-    let data = { payload: `https://www.youtube.com/watch?v=${id}` };
+    let data = {
+      type: 'text',
+      payload: {
+        text: `https://www.youtube.com/watch?v=${id}`,
+        media: 'typed'
+      }
+    };
+
     let user = { room: 'AAAAAA', type: 'teacher', recipient: 2, socket: { id: 1 } };
 
     let toTest = messageParser.parser(data, user);
@@ -131,7 +171,8 @@ describe('Messenger platform parser', () => {
       timestamp: toTest.timestamp,
       message: {
         type: 'video',
-        url: `https://www.youtube.com/embed/${id}?`
+        url: `https://www.youtube.com/embed/${id}?`,
+        media: data.payload.media
       }
     };
 
@@ -142,7 +183,13 @@ describe('Messenger platform parser', () => {
     let id = '-ZWGpOSS6T0';
     let start = '10';
     let end = '20';
-    let data = { payload: `https://www.youtube.com/embed/${id}?start=${start}&end=${end}` };
+    let data = {
+      type: 'text',
+      payload: {
+        text: `https://www.youtube.com/embed/${id}?start=${start}&end=${end}`,
+        media: 'typed'
+      }
+    };
     let user = { room: 'AAAAAA', type: 'teacher', recipient: 2, socket: { id: 1 } };
 
     let toTest = messageParser.parser(data, user);
@@ -154,7 +201,8 @@ describe('Messenger platform parser', () => {
       timestamp: toTest.timestamp,
       message: {
         type: 'video',
-        url: `https://www.youtube.com/embed/${id}?&start=${start}&end=${end}`
+        url: `https://www.youtube.com/embed/${id}?&start=${start}&end=${end}`,
+        media: data.payload.media
       }
     };
 
