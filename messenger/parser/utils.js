@@ -114,7 +114,17 @@ const extractYoutubeVideoParameters = url => {
       text (string): text to parse
 
     RETURN
-      (object): message
+      (object): message that can be
+
+      > text
+
+      type (string): equals 'text'
+      text (string): text message
+
+      > video
+
+      type (string): equals 'video'
+      url (string): url to the video
 */
 const parseText = (text) => {
 

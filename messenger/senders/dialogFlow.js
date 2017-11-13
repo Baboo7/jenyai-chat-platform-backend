@@ -5,15 +5,20 @@ const dialogFlowConfig = require('../../configs/dialogFlow');
 /*  Send a message to the dialogflow agent.
 
     PARAMS
-      query (string): text message to send
+      message (object): message to send to the agent (see message type)
       sessionId (string|number): unique session id
-      callback (function): called when the agent's response is received. Take one argument:
-        data (object): response object (see dialogflow documentation)
+      callback (function): called when the agent's response is received. Take two arguments:
+        err (boolean): true if an error was triggered, false otherwise
+        data (object): response object (see dialogflow documentation), undefined if error true
 
     RETURN
       none
 */
-const sendMessage = (query, sessionId, callback) => {
+const sendMessage = (message, sessionId, callback) => {
+
+  // check if the message has a valid type
+  let validTypes = ['text', 'event'];
+  if (!validTypes.includes(message.type)) callback(true);
 
   let headers = {
     'Authorization': `Bearer ${dialogFlowConfig.clientKey}`,
@@ -22,10 +27,24 @@ const sendMessage = (query, sessionId, callback) => {
 
   let body = {
     sessionId: sessionId,
-    lang: 'en',
-    query: query
+    lang: 'en'
   };
 
+  // adapt body request to message type
+
+  // TEXT message
+  if (message.type === 'text') {
+    body.query = message.text;
+  }
+
+  // EVENT message
+  else {
+    body.event = {
+      name: message.event
+    };
+  }
+
+  // send the request to the agent
   axios({
     url: dialogFlowConfig.url,
     method: 'post',
@@ -33,9 +52,12 @@ const sendMessage = (query, sessionId, callback) => {
     data: body
   })
   .then(res => {
-    callback(res.data);
+    callback(false, res.data);
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.log(err);
+    callback(true);
+  });
 }
 
 module.exports = {

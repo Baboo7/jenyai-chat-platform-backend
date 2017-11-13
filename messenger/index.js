@@ -22,7 +22,9 @@ const sendMessage = (sockets, user, data, recipient) => {
   // Parsing
 
   let messages =  parser(data, user, recipient);
-  if (messages.length === 0) { return; }
+  if (!messages
+    || messages.length === 0)
+    return;
 
   // Sending
 
@@ -41,9 +43,12 @@ const sendMessage = (sockets, user, data, recipient) => {
   if (userManager.isStudent(user)) {
     if (user.discussWithAgent) {
       messages.forEach(msg => {
-        senders.dialogFlow.sendMessage(msg.message.text, user.socket.id, agentResponse => {
-          let agentUser = userManager.createAgent(user.room, user.socket.id);
-          sendMessage(sockets, agentUser, agentResponse, user);
+        senders.dialogFlow.sendMessage(msg.message, user.socket.id, (err, agentResponse) => {
+
+          if (!err) {
+            let agentUser = userManager.createAgent(user.room, user.socket.id);
+            sendMessage(sockets, agentUser, agentResponse, user);
+          }
         });
       });
     }

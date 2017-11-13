@@ -13,9 +13,19 @@ const fromUserToUser = (messages, user) => {
   let adaptedMessages = Object.assign([ ], messages);
 
   adaptedMessages.forEach(msg => {
+
+    // event messages cant be sent to users
+    if (msg.message.type === 'event') return;
+
+    // adapt message to STUDENT
     if (user.type === 'student') {
+
       msg.align = msg.emitterType === 'student' ? 'right' : 'left';
-    } else if (user.type === 'teacher') {
+    }
+
+    // adapt message to TEACHER
+    else if (user.type === 'teacher') {
+
       msg.align = (msg.emitterType === 'teacher' || msg.emitterType === 'agent') ? 'right' : 'left';
 
       if (msg.emitterType === 'agent') {

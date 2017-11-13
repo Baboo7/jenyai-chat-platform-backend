@@ -8,12 +8,19 @@ let sockets = require('../sockets');
 
     > 'text'
 
+    type (string): equals 'text'
     payload (object)
       text (string)
       media (string): the way the message has been entered
+
+    > 'event'
+
+    type (string): equals 'event'
+    payload (object)
+      event (string): event to send to the agent
 */
 
-/*  Transmits a message from one client to an other.
+/*  Transmit a message from one client to an other.
 
     PARAMS
       data (object): object sent by the client. It must contain

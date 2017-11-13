@@ -12,6 +12,8 @@ const utils = require('./utils');
       (object): parsed message or null if invalid
 */
 const parser = (data, user) => {
+
+  //  check global message format
   if (!data
     || !data.type
     || !data.payload)
@@ -20,6 +22,9 @@ const parser = (data, user) => {
   let payload = data.payload;
   let msg = { };
 
+  //  build meta message
+
+  //  incoming TEXT message
   if (data.type === 'text') {
 
     if (!payload.text
@@ -29,6 +34,17 @@ const parser = (data, user) => {
 
     msg = utils.parseText(payload.text);
     msg.media = payload.media;
+  }
+
+  //  incoming EVENT message
+  else if (data.type === 'event') {
+
+    if (!payload.event
+      || utils.isEmpty(payload.event))
+      return null
+
+    msg.type = 'event';
+    msg.event = payload.event;
   } else
     return null;
 
