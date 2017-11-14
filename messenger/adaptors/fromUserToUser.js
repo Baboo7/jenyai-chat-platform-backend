@@ -26,6 +26,17 @@ const fromUserToUser = (messages, user) => {
     // adapt message to TEACHER
     else if (user.type === 'teacher') {
 
+      // convert quick replies message to text message
+      if (msg.message.type === 'quick-replies') {
+
+        let newMsg = {
+          type: 'text',
+          text: 'quick replies: ' + msg.message.replies.join(',')
+        };
+
+        msg.message = newMsg;
+      }
+
       msg.align = (msg.emitterType === 'teacher' || msg.emitterType === 'agent') ? 'right' : 'left';
 
       if (msg.emitterType === 'agent') {

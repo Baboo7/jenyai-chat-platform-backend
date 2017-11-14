@@ -71,8 +71,10 @@ const getAll = (req, res) => {
 
         let text = ' ';
         if (msg.message.type === 'text') { text = msg.message.text; }
+        else if (msg.message.type === 'event') { text = 'event: ' + msg.message.event; }
         else if (msg.message.type === 'video') { text = msg.message.url; }
         else if (msg.message.type === 'image') { text = msg.message.src; }
+        else if (msg.message.type === 'quick-replies') { text = 'quick replies: ' + msg.message.replies.join(','); }
 
         let lineProperties = [
           c.uuid,

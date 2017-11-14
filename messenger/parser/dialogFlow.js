@@ -46,8 +46,17 @@ const parser = (raw, recipient) => {
 
         let payload = msg.payload;
 
+        // IMAGE message
         if (payload.type === 'image'
           && payload.src) {
+          metamsg.message = payload;
+          parsedMsg.push(metamsg);
+        }
+
+        // QUICK REPLIES message
+        else if (payload.type === 'quick-replies'
+          && payload.replies
+          && payload.replies.length > 0) {
           metamsg.message = payload;
           parsedMsg.push(metamsg);
         }
