@@ -20,8 +20,10 @@ const createCSVLine = properties => {
     let property = properties[p];
 
     if (!property) property = ' ';
+    else if (typeof property === 'string') {
+      property = property.replace(/"/g, '""');
+    }
 
-    property = property.replace(/"/g, '""');
     properties[p] = property;
   }
 
@@ -53,6 +55,7 @@ const getAll = (req, res) => {
       let header = [
         'conversation id',
         'issuance date',
+        'message id',
         'message',
         'room',
         'emitter id',
@@ -61,6 +64,8 @@ const getAll = (req, res) => {
         'recipient id',
         'recipient type',
         'recipient name',
+        'intent name',
+        'confidence',
         'media'
       ];
 
@@ -79,6 +84,7 @@ const getAll = (req, res) => {
         let lineProperties = [
           c.uuid,
           c.timestamp.toString(),
+          msg.msgId,
           text,
           msg.room,
           msg.emitter,
@@ -87,6 +93,8 @@ const getAll = (req, res) => {
           msg.recipient,
           msg.recipientType,
           msg.recipientName,
+          msg.intentName,
+          msg.confidence,
           msg.message.media
         ];
 
