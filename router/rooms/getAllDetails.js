@@ -4,8 +4,7 @@ const roomsCtrl = require('../../database/controllers/rooms');
 /*  Gets a room from the database.
 
     PARAMS
-      req (object): request object. Must contains the following properties in its params property
-        name (string): name of the room
+      req (object): request object
       res (object): response object
 
     RETURN
